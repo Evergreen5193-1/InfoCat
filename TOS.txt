@@ -1,0 +1,64 @@
+InfoCat Discord Bot - Terms of Service
+
+Effective Date: April 9th, 2025
+
+These Terms of Service ("Terms") govern your use of the InfoCat Discord bot (the "Bot"). By using the Bot, you agree to be bound by these Terms. Please read them carefully.
+
+1. Acceptance of Terms
+
+By adding, interacting with, or otherwise using the InfoCat Bot on any Discord server, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these Terms, you may not use the Bot.   
+
+2. Description of the Bot
+
+InfoCat is a Discord bot designed to made to provide information and calculators as a third party service for Rise Of Kingdoms. The features and functionalities of the Bot may evolve over time.
+
+3. User Conduct and Responsibilities
+
+By using the Bot, you agree to:
+
+Use the Bot in a manner that is lawful, respectful, and in accordance with Discord's Terms of Service and Community Guidelines.
+Not use the Bot for any malicious, harmful, or illegal purposes, including but not limited to spamming, harassment, or distribution of inappropriate content.
+Be responsible for any actions taken through the Bot on servers you manage or have sufficient permissions on.
+Understand that the Bot's responses and actions are based on its programming and may not always be perfect or reflect real-world accuracy.
+Respect the intellectual property rights associated with the Bot and its code.
+4. Data Privacy
+
+Data Collection: Channel ID's, Server ID's, and Message ID's.
+Data Usage: We need this data in order for the bot to function with the commands and information it provides.
+Data Sharing: We don't share any data.
+User Rights: If data would like to be removed, simply kick the discord bot out of the server.
+Please refer to our separate Privacy Policy for a more detailed explanation of our data handling practices: https://github.com/Evergreen5193-1/InfoCat/blob/main/Privacy%20Policy.TXT
+
+5. Intellectual Property
+
+The InfoCat Bot and its code, design, and any associated materials are the intellectual property of Evergreen. These Terms do not grant you any right, title, or interest in or to the Bot or its intellectual property. You may not copy, modify, distribute, sell, or lease any part of the Bot without our prior written consent.
+
+6. Disclaimer of Warranty
+
+THE INFOCAT BOT IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT ANY WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE BOT WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF HARMFUL COMPONENTS.   
+
+7. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, EVERGREEN SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES) ARISING OUT OF OR RELATING TO YOUR USE OF OR INABILITY TO USE THE INFOCAT BOT. OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR YOUR USE OF THE BOT SHALL NOT EXCEED $2,500.   
+
+8. Indemnification
+
+You agree to indemnify and hold harmless Evergreen and its affiliates, officers, agents, and employees from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to your use of the Bot or your breach of these Terms.   
+
+9. Termination
+
+We reserve the right to suspend or terminate access to the Bot at any time, with or without cause and without prior notice. You may also cease using the Bot at any time by removing it from your Discord server(s).
+
+10. Changes to These Terms
+
+We may update these Terms from time to time. We will notify you of any material changes by posting changes to the GitHub site. Your continued use of the Bot after the effective date of any revised Terms constitutes your acceptance of the updated Terms.
+
+11. Governing Law
+
+These Terms shall be governed by and construed in accordance with the laws of the State of Illinois without regard to its conflict of law provisions.   
+
+12. Contact Information
+
+If you have any questions about these Terms or the InfoCat Bot, please contact us at: evergreen5193 via Discord.
+
+

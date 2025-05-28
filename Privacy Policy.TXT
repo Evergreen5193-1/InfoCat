@@ -1,7 +1,93 @@
-##PRIVACY POLICY
-1. Only Data collected is message channel and server ID's user ID's are not stored.
-2. We need this data inorder for the bot to function with the commands and information it provides.
-3. We use this data for strictly getting the bot to see what it is doing
-4. Other than Discord the company and users of your own bot, who do you share your collected data with? No one
-5. How can users contact you with concerns? Via discord: evergreen5193
-6. If you store data, how can users have that data removed? all data is removed after you delete the bot.
+Infocat Privacy Policy
+Last Updated: May 28, 2025
+
+Welcome to Infocat! This Privacy Policy explains how Infocat ("we," "us," or "our"), created by Evergreen, collects, uses, and protects your information when you use the Infocat Discord bot (the "Bot").
+
+By inviting and using the Infocat Bot in your Discord server, or by interacting with the Bot in a server where it is present, you agree to the collection and use of information in accordance with this policy.
+
+1. Information We Collect
+Infocat is designed to help you track and calculate various in-game statistics. We only collect information that is necessary for the Bot to perform its functions. The types of information we collect are:
+
+a) Information You Provide Directly:
+When you use Infocat's commands, you may provide specific data related to your game progress. This includes, but is not limited to:
+
+Tracker Data:
+
+Activity Points (AP): Values related to usage/gain.
+
+Honor: Values related to daily gains.
+
+Barbs Killed: Numerical data on barbarians killed.
+
+Speedups: Values related to speedup gain/usage (extracted from user-provided information, e.g., a screenshot from which only numerical data is taken).
+
+Materials: Values related to total materials gained.
+
+Farms: Values related to total resources across farms (extracted from user-provided information, e.g., a screenshot per farm from which only numerical data is taken).
+
+Calculator Inputs:
+
+Values entered into calculators such as Gold Heads, Passports, Troop Training, and Power to Troops. These inputs are processed to provide a calculation result. The specific input values for one-off calculations are not stored long-term unless they contribute to a tracked metric listed above.
+
+b) Information Collected Automatically (Discord Identifiers):
+To function correctly and associate data with the right user or server, Infocat collects:
+
+User ID: Your unique Discord User ID. This is used to associate your tracked data with your Discord account.
+
+Channel ID: The Discord Channel ID where a command is used. This helps the Bot respond in the correct channel and can be used for context-specific features or logging.
+
+Guild/Server ID: The Discord Guild (Server) ID where the Bot is used. This is used to manage settings or data on a per-server basis.
+
+Important Note on Identifiers: While we state that we collect "nothing that would show who they are" in terms of real-world identity (like your real name or email, unless you provide it for support), Discord User IDs, Channel IDs, and Guild IDs are unique identifiers within the Discord platform. This data is essential for the Bot's functionality to save and retrieve your specific game data. We do not collect other personal information like email addresses, real names, or IP addresses through the Bot's core functions.
+
+c) Data from Screenshots:
+For features like "Speedups" and "Farms" tracking, if you provide a screenshot, Infocat is designed to only extract the relevant numerical values from that screenshot. The image file itself is not stored by Infocat.
+
+2. How We Use Your Information
+The information collected is used solely for the following purposes:
+
+To Provide Bot Functionality: To operate the trackers and calculators as described (e.g., storing your AP gain, calculating passport requirements).
+
+To Associate Data: To link the tracked game data (values) to your specific Discord User ID and the server (Guild ID) it pertains to.
+
+To Improve the Bot: We may analyze aggregated and anonymized usage data (e.g., command usage frequency) to understand how the Bot is used and to make improvements. This analysis will not involve individual user data.
+
+To Respond to Support Requests: If you contact us for support, we may use your Discord User ID or other information you provide to assist you.
+
+3. Data Storage and Security
+The data collected by Infocat (the numerical values for trackers, User IDs, Channel IDs, and Guild IDs) is stored in a database.
+
+We take reasonable measures to protect the information stored from loss, theft, misuse, and unauthorized access, disclosure, alteration, and destruction.
+
+However, please remember that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your information, we cannot guarantee its absolute security.
+
+4. Data Retention
+We will retain the collected information (values, User IDs, Channel IDs, Guild IDs) for as long as it is necessary to provide the Bot's services or until you request its deletion.
+
+Data associated with a specific user may be deleted upon request from that user.
+
+Data associated with a server may be managed or deleted according to server administrator requests, where feasible and appropriate.
+
+5. Your Rights
+You have certain rights regarding your data:
+
+Access: You can typically view the data Infocat has stored for you through the Bot's commands (e.g., commands to show your tracked stats).
+
+Correction: If you believe any data stored is incorrect, you can usually update it using the Bot's commands.
+
+Deletion: You can request the deletion of your data associated with Infocat by contacting the Bot creator (see Section 8). Please note that deleting your data will result in the loss of your tracked history within the Bot. Server administrators may also request deletion of server-wide bot data.
+
+6. Third-Party Services
+Infocat operates on the Discord platform. Your use of Discord is subject to Discord's own Privacy Policy and Terms of Service. Infocat does not control how Discord collects or uses your data.
+
+7. Changes to This Privacy Policy
+We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new Privacy Policy, potentially through a bot announcement on Discord or by updating the "Last Updated" date at the top of this policy. You are advised to review this Privacy Policy periodically for any changes.
+
+8. Contact Us
+If you have any questions or concerns about this Privacy Policy or Infocat's data practices, please contact the creator:
+
+Creator: Evergreen
+
+Discord Contact: evergreen5193
+
+By using Infocat, you acknowledge that you have read and understood this Privacy Policy.

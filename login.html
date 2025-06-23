@@ -56,7 +56,7 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="index.html#trackers" class="hover:text-brand-purple transition-colors duration-300">Trackers</a>
                     <a href="calculators.html" class="hover:text-brand-purple transition-colors duration-300">Calculators</a>
-                    <a href="#" class="hover:text-brand-purple transition-colors duration-300">About</a>
+                    <a href="about.html" class="hover:text-brand-purple transition-colors duration-300">About</a>
                 </nav>
             </div>
         </div>
@@ -74,7 +74,7 @@
                             Log in with Discord to access your personalized dashboard, view your tracked data, and sync your progress automatically.
                         </p>
                         <div class="mt-8">
-                            <a href="https://discord.com/oauth2/authorize?client_id=1358885617928241424&response_type=code&redirect_uri=https%3A%2F%2Finfocat-rok.com%2Flogin.html%23&scope=guilds+email+identify+connections" class="w-full flex items-center justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300">
+                            <a href="https://discord.com/api/oauth2/authorize?client_id=1358885617928241424&redirect_uri=https%3A%2F%2Finfocat-rok.com%2Flogin.html&response_type=code&scope=identify%20email" class="w-full flex items-center justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300">
                                 Login with Discord
                             </a>
                         </div>
@@ -86,6 +86,24 @@
             </div>
         </section>
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-center items-center text-center">
+                 <div class="mb-6 md:mb-0">
+                    <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3">
+                        <img src="Infocat.png" alt="InfoCat Logo" class="h-10 w-10 rounded-lg"
+                        onerror="this.onerror=null;this.src='https://placehold.co/40x40/9D8DF1/ffffff?text=iC';">
+                        <span class="text-xl font-bold text-white">InfoCat</span>
+                    </a>
+                    <p class="text-gray-400 text-sm mt-2">
+                        &copy; 2025 InfoCat. Not affiliated with Lilith Games.
+                    </p>
+                 </div>
+            </div>
+        </div>
+    </footer>
     
     <script>
         // Simple mobile menu toggle

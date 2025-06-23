@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InfoCat - Login</title>
-    <link rel="icon" type="image/png" href="Infocat.png">
+    <link rel="icon" type="image/png" href="infocat-smaller.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,7 +74,7 @@
                             Log in with Discord to access your personalized dashboard, view your tracked data, and sync your progress automatically.
                         </p>
                         <div class="mt-8">
-                            <a href="#" class="w-full flex items-center justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300">
+                            <a href="https://discord.com/api/oauth2/authorize?client_id=1358885617928241424&redirect_uri=https%3A%2F%2Finfocat-rok.com%2Flogin.html&response_type=code&scope=identify%20email" class="w-full flex items-center justify-center bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 px-6 rounded-lg transition-colors duration-300">
                                 Login with Discord
                             </a>
                         </div>
@@ -91,15 +91,18 @@
         // Simple mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        // Check if the button exists before adding listener
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
         // Close mobile menu when a link is clicked
         const navLinks = document.querySelectorAll('#header a');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if (!mobileMenu.classList.contains('hidden')) {
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
                     mobileMenu.classList.add('hidden');
                 }
             });

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoCat - Calculators</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111118; /* A slightly deeper black */
+        }
+        .brand-purple { color: #9D8DF1; }
+        .bg-brand-purple { background-color: #9D8DF1; }
+        .border-brand-purple { border-color: #9D8DF1; }
+        .ring-brand-purple { ring-color: #9D8DF1; }
+        .focus\:ring-brand-purple:focus {
+            --tw-ring-color: #9D8DF1;
+        }
+        .glassmorphism {
+            background: rgba(30, 30, 40, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(157, 141, 241, 0.15);
+        }
+        .hero-bg {
+            background-color: #111118;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(157, 141, 241, 0.15), transparent);
+        }
+         /* Custom scrollbar for a more integrated look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a22;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a5a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9D8DF1;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header -->
+    <header id="header" class="sticky top-0 left-0 right-0 z-50 transition-all duration-300 glassmorphism">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="https://i.ibb.co/9g0g2P7/image.png" alt="InfoCat Logo" class="h-12 w-12 rounded-lg"
+                         onerror="this.onerror=null;this.src='https://placehold.co/50x50/9D8DF1/ffffff?text=iC';">
+                    <span class="hidden sm:block text-2xl font-bold text-white">InfoCat</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#trackers" class="hover:text-brand-purple transition-colors duration-300">Trackers</a>
+                    <a href="calculators.html" class="text-brand-purple font-bold transition-colors duration-300">Calculators</a>
+                    <a href="#" class="hover:text-brand-purple transition-colors duration-300">About</a>
+                </nav>
+
+                <!-- Connect Button -->
+                <div class="hidden md:block">
+                    <a href="#" class="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring">
+                        <span class="absolute inset-0 border border-brand-purple rounded-lg"></span>
+                        <span class="block border border-gray-800 rounded-lg bg-gray-900 px-6 py-3 transition-transform active:bg-brand-purple/20 group-hover:-translate-x-1 group-hover:-translate-y-1">
+                            Connect with Discord
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4">
+            <a href="index.html#trackers" class="block py-2 px-4 text-sm hover:bg-gray-700">Trackers</a>
+            <a href="calculators.html" class="block py-2 px-4 text-sm bg-gray-700 text-brand-purple font-bold">Calculators</a>
+            <a href="#" class="block py-2 px-4 text-sm hover:bg-gray-700">About</a>
+             <div class="px-4 mt-4">
+                 <a href="#" class="block w-full text-center bg-brand-purple text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300">
+                    Connect with Discord
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Calculators Section -->
+        <section class="py-20 lg:py-32 hero-bg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-white">InfoCat Calculators</h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-400">Powerful, easy-to-use tools to help you strategize effectively.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                    
+                    <!-- Passport Calculator -->
+                    <div id="passports" class="p-8 glassmorphism rounded-2xl">
+                        <h2 class="text-2xl font-bold text-white mb-6">✈️ Passport Calculator</h2>
+                        <div class="space-y-4">
+                            <label for="power-input" class="text-sm font-medium text-gray-300">Your Current Power</label>
+                            <input type="number" id="passport-power-input" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 55000000">
+                        </div>
+                        <div class="mt-6 border-t border-gray-700 pt-6">
+                            <span class="text-gray-400 text-sm">Passports Required</span>
+                             <p id="passport-result" class="text-5xl font-extrabold text-brand-purple mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Power to Troops Calculator -->
+                     <div id="power-to-troops" class="p-8 glassmorphism rounded-2xl">
+                        <h2 class="text-2xl font-bold text-white mb-6">📊 Power to Troops</h2>
+                        <div class="space-y-4">
+                            <label for="power-to-troops-input" class="text-sm font-medium text-gray-300">Amount of Power</label>
+                            <input type="number" id="power-to-troops-input" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 1000000">
+                        </div>
+                        <div class="mt-6 border-t border-gray-700 pt-6 space-y-3">
+                             <div>
+                                <span class="text-gray-400 text-sm">Equivalent T5 Troops</span>
+                                <p id="power-t5-result" class="text-3xl font-bold text-brand-purple">0</p>
+                             </div>
+                             <div>
+                                <span class="text-gray-400 text-sm">Equivalent T4 Troops</span>
+                                <p id="power-t4-result" class="text-3xl font-bold text-brand-purple">0</p>
+                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Gold Head Calculator -->
+                    <div id="gold-heads" class="p-8 glassmorphism rounded-2xl">
+                        <h2 class="text-2xl font-bold text-white mb-6">🗿 Golden Sculpture Calculator</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="gh-current" class="text-sm font-medium text-gray-300">Current</label>
+                                <input type="text" id="gh-current" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="5111">
+                            </div>
+                            <div>
+                                <label for="gh-target" class="text-sm font-medium text-gray-300">Target</label>
+                                <input type="text" id="gh-target" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="5555">
+                            </div>
+                        </div>
+                         <div class="mt-6 border-t border-gray-700 pt-6">
+                             <span class="text-gray-400 text-sm">Universal Sculptures to Max</span>
+                             <p id="gh-result" class="text-5xl font-extrabold text-brand-purple mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Troop Training Calculator -->
+                    <div id="troop-training" class="p-8 glassmorphism rounded-2xl">
+                        <h2 class="text-2xl font-bold text-white mb-6">⚔️ Troop Training Calculator</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                             <div>
+                                <label for="troop-type" class="text-sm font-medium text-gray-300">Troop Type</label>
+                                <select id="troop-type" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent">
+                                    <option value="infantry">Infantry</option>
+                                    <option value="archer">Archer</option>
+                                    <option value="cavalry">Cavalry</option>
+                                    <option value="siege">Siege</option>
+                                </select>
+                            </div>
+                             <div>
+                                <label for="troop-tier" class="text-sm font-medium text-gray-300">Tier</label>
+                                <select id="troop-tier" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent">
+                                    <option value="t4">T4</option>
+                                    <option value="t5">T5</option>
+                                    <option value="t4_to_t5">T4 to T5</option>
+                                </select>
+                            </div>
+                            <div class="col-span-2">
+                                <label for="num-troops" class="text-sm font-medium text-gray-300">Number of Troops</label>
+                                <input type="number" id="num-troops" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 100000">
+                            </div>
+                             <div class="col-span-2">
+                                <label for="training-speed" class="text-sm font-medium text-gray-300">Training Speed %</label>
+                                <input type="number" id="training-speed" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 550">
+                            </div>
+                        </div>
+                         <div id="training-results" class="mt-6 border-t border-gray-700 pt-6 space-y-3">
+                            <!-- Results will be injected here by JavaScript -->
+                         </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                 <div class="mb-6 md:mb-0">
+                    <a href="index.html" class="flex items-center justify-center md:justify-start space-x-3">
+                        <img src="https://i.ibb.co/9g0g2P7/image.png" alt="InfoCat Logo" class="h-10 w-10 rounded-lg"
+                        onerror="this.onerror=null;this.src='https://placehold.co/40x40/9D8DF1/ffffff?text=iC';">
+                        <span class="text-xl font-bold text-white">InfoCat</span>
+                    </a>
+                    <p class="text-gray-400 text-sm mt-2">
+                        &copy; 2025 InfoCat. Not affiliated with Lilith Games.
+                    </p>
+                 </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white" aria-label="Discord">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8257-.618 1.32-.0825.2246-.1645.4491-.2506.6698-1.7951-.3405-3.5164-.3405-5.3115 0-.086-.2207-.1681-.4452-.2506-.6698-.1716-.4942-.407-.9446-.618-1.32a.0741.0741 0 00-.0785-.0371 19.7363 19.7363 0 00-4.8851 1.5152.069.069 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0825.0825 0 00.0825.0825c.9258.0041 1.83-.1962 2.6917-.539a.0775.0775 0 00.0435-.1235c-.486-.64-.8491-1.39-1.091-2.2259a.0748.0748 0 01.021-.0825c1.4883-.9845 2.5041-2.2259 3.0456-3.5678a.0741.0741 0 00-.012-.0865c-.417-.323-1.2823-.96-1.2823-.96s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253-2.5851.012-3.4118 1.42-3.4118 1.42l-.004.004-.021.021-.021.021-.004.004s.4819.523.8407.9845c.4611.5592.934.9804 1.4243 1.3712.2481.192.4835.38.7064.5634.6958.5832 1.5034 1.154 2.3785 1.7492a18.998 18.998 0 003.18.94.0741.0741 0 00.0825-.0165c.004-.004.004-.008.008-.012a10.8552 10.8552 0 00.2747-.2829 11.2372 11.2372 0 00.2587-.3322c.299-1.28.4984-2.61.5945-3.9939a.0741.0741 0 00-.029-.0618c-.16-.09-1.3619-.94-1.3619-.94s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253-2.5851.012-3.4118 1.42-3.4118 1.42l-.004.004-.021.021-.021.021-.004.004s.4819.523.8407.9845c.4611.5592.934.9804 1.4243 1.3712.2481.192.4835.38.7064.5634.6958.5832 1.5034 1.154 2.3785 1.7492 1.314.908 2.7686 1.4422 4.2922 1.59a.0741.0741 0 00.0865-.0578c.029-.14.0539-.28.0744-.42.1134-.76.1954-1.53.242-2.31.021-.32.033-.64.0415-.96.004-.13.008-.26.008-.39a.0741.0741 0 00-.016-.0492c-.1-.07-.33-.22-1.3413-.91-1.0238-.69-1.2823-.87-1.2823-.87s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253l-.004-.004a17.424 17.424 0 01-3.387-2.02.0741.0741 0 00-.0946.012c-.219.24-.45.49-.6572.74a1.1732 1.1732 0 00-.1175.14c-.012.016-.021.033-.033.049a.0741.0741 0 00.008.0946c.132.1.332.22.4819.33.158.11.283.2.39.27l.004.004.004.004c.09.06.18.13.26.19.48.36.95.7 1.42 1.02l.004.004c.54.36 1.06.7 1.54 1.02.004.004.004.004.008.004.43.28.84.54 1.22.78l.004.004c.16.1.32.2.47.28.02.01.04.02.06.03.23.14.46.28.68.41.07.04.13.08.19.12.21.13.42.26.62.38.04.02.08.04.12.06.11.06.22.12.33.18.02.01.05.02.07.03.19.1.38.2.56.29.06.03.12.06.18.09.21.1.42.2.62.28.02.01.05.02.07.03.22.1.43.19.64.28a19.897 19.897 0 006.5794-1.3753.0741.0741 0 00.0618-.0946c-.23-1.04-1.07-4.83-1.07-4.83s-.012-.0452-.033-.0825z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- DATA CONSTANTS (from Python file) ---
+        const MIGRATION_DATA = [
+            {"power_min": 1, "power_max": 9999999, "normal": 1},
+            {"power_min": 10000000, "power_max": 14999999, "normal": 2},
+            {"power_min": 15000000, "power_max": 19999999, "normal": 3},
+            {"power_min": 20000000, "power_max": 24999999, "normal": 4},
+            {"power_min": 25000000, "power_max": 29999999, "normal": 6},
+            {"power_min": 30000000, "power_max": 34999999, "normal": 9},
+            {"power_min": 35000000, "power_max": 39999999, "normal": 12},
+            {"power_min": 40000000, "power_max": 44999999, "normal": 15},
+            {"power_min": 45000000, "power_max": 49999999, "normal": 20},
+            {"power_min": 50000000, "power_max": 54999999, "normal": 25},
+            {"power_min": 55000000, "power_max": 59999999, "normal": 30},
+            {"power_min": 60000000, "power_max": 64999999, "normal": 35},
+            {"power_min": 65000000, "power_max": 69999999, "normal": 40},
+            {"power_min": 70000000, "power_max": 74999999, "normal": 45},
+            {"power_min": 75000000, "power_max": 79999999, "normal": 50},
+            {"power_min": 80000000, "power_max": 84999999, "normal": 55},
+            {"power_min": 85000000, "power_max": 89999999, "normal": 60},
+            {"power_min": 90000000, "power_max": 94999999, "normal": 65},
+            {"power_min": 95000000, "power_max": 99999999, "normal": 70},
+            {"power_min": 100000000, "power_max": Infinity, "normal": 75},
+        ];
+
+        const GH_SUM_VALUES = {
+            4: 10, 5: 20, 6: 30, 7: 45, 8: 60, 9: 90, 10: 120, 11: 160, 12: 200,
+            13: 245, 14: 290, 15: 340, 16: 390, 17: 465, 18: 540, 19: 620, 20: 700,
+        };
+
+        const TROOP_DATA = {
+            "infantry": {
+                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 800, "wood": 800, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 300, "wood": 300, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 500, "wood": 500, "gold": 380}}
+            },
+            "archer": {
+                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"wood": 800, "stone": 600, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"wood": 300, "stone": 225, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"wood": 500, "stone": 375, "gold": 380}}
+            },
+            "cavalry": {
+                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 800, "stone": 600, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 300, "stone": 225, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 500, "stone": 375, "gold": 380}}
+            },
+            "siege": {
+                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 500, "wood": 500, "stone": 400, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 200, "wood": 200, "stone": 150, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 300, "wood": 300, "stone": 250, "gold": 380}}
+            }
+        };
+
+
+        // --- CALCULATOR LOGIC ---
+
+        // Passport Calculator
+        const passportPowerInput = document.getElementById('passport-power-input');
+        const passportResult = document.getElementById('passport-result');
+        
+        function calculatePassports() {
+            const power = parseInt(passportPowerInput.value) || 0;
+            let needed = 0;
+            for (const entry of MIGRATION_DATA) {
+                if (power >= entry.power_min && power <= entry.power_max) {
+                    needed = entry.normal;
+                    break;
+                }
+            }
+            passportResult.innerText = needed;
+        }
+        passportPowerInput.addEventListener('input', calculatePassports);
+
+        // Power to Troops Calculator
+        const powerToTroopsInput = document.getElementById('power-to-troops-input');
+        const powerT5Result = document.getElementById('power-t5-result');
+        const powerT4Result = document.getElementById('power-t4-result');
+
+        function calculatePowerToTroops() {
+            const power = parseInt(powerToTroopsInput.value) || 0;
+            const numT5 = Math.floor(power / 10);
+            const numT4 = Math.floor(power / 4);
+            powerT5Result.innerText = numT5.toLocaleString();
+            powerT4Result.innerText = numT4.toLocaleString();
+        }
+        powerToTroopsInput.addEventListener('input', calculatePowerToTroops);
+
+        // GH Calculator
+        const ghCurrentInput = document.getElementById('gh-current');
+        const ghTargetInput = document.getElementById('gh-target');
+        const ghResult = document.getElementById('gh-result');
+        
+        function getGhValue(level) {
+            if (!/^\d{4}$/.test(level)) return null;
+            const digitSum = level.split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+            return GH_SUM_VALUES[digitSum] || null;
+        }
+
+        function calculateGhNeeded() {
+            const currentGh = getGhValue(ghCurrentInput.value);
+            const targetGh = getGhValue(ghTargetInput.value);
+            
+            if (currentGh === null || targetGh === null || currentGh >= targetGh) {
+                ghResult.innerText = '0';
+                return;
+            }
+            ghResult.innerText = (targetGh - currentGh).toLocaleString();
+        }
+        ghCurrentInput.addEventListener('input', calculateGhNeeded);
+        ghTargetInput.addEventListener('input', calculateGhNeeded);
+
+        // Troop Training Calculator
+        const troopTypeSelect = document.getElementById('troop-type');
+        const troopTierSelect = document.getElementById('troop-tier');
+        const numTroopsInput = document.getElementById('num-troops');
+        const trainingSpeedInput = document.getElementById('training-speed');
+        const trainingResultsDiv = document.getElementById('training-results');
+
+        function calculateTraining() {
+            const troopType = troopTypeSelect.value;
+            const troopTier = troopTierSelect.value;
+            const numTroops = parseInt(numTroopsInput.value) || 0;
+            const trainingSpeed = parseInt(trainingSpeedInput.value) || 0;
+
+            if (!troopType || !troopTier || numTroops === 0) {
+                 trainingResultsDiv.innerHTML = '';
+                 return;
+            }
+            
+            const troopInfo = TROOP_DATA[troopType][troopTier];
+            const effectiveSpeed = 1 + (trainingSpeed / 100.0);
+            const timePerTroop = troopInfo.base_time / effectiveSpeed;
+            const totalTimeSeconds = timePerTroop * numTroops;
+            const totalPowerGain = numTroops * troopInfo.power_per_troop;
+
+            const days = Math.floor(totalTimeSeconds / (24 * 3600));
+            const hours = Math.floor((totalTimeSeconds % (24 * 3600)) / 3600);
+            const minutes = Math.floor((totalTimeSeconds % 3600) / 60);
+
+            let timeString = `${days}d ${hours}h ${minutes}m`;
+            
+            let resourcesHtml = '';
+            for(const [resource, amount] of Object.entries(troopInfo.resources)) {
+                resourcesHtml += `<div class="flex justify-between text-sm"><span class="capitalize text-gray-400">${resource}</span><span class="font-bold text-white">${(amount * numTroops).toLocaleString()}</span></div>`;
+            }
+
+            trainingResultsDiv.innerHTML = `
+                <div>
+                    <span class="text-gray-400 text-sm">Time to Train</span>
+                    <p class="text-xl font-bold text-brand-purple">${timeString}</p>
+                </div>
+                 <div>
+                    <span class="text-gray-400 text-sm">Power Gain</span>
+                    <p class="text-xl font-bold text-brand-purple">${totalPowerGain.toLocaleString()}</p>
+                </div>
+                <div>
+                     <span class="text-gray-400 text-sm">Total Resources</span>
+                     <div class="mt-1 space-y-1">${resourcesHtml}</div>
+                </div>
+            `;
+        }
+        troopTypeSelect.addEventListener('change', calculateTraining);
+        troopTierSelect.addEventListener('change', calculateTraining);
+        numTroopsInput.addEventListener('input', calculateTraining);
+        trainingSpeedInput.addEventListener('input', calculateTraining);
+        
+        // Initial call to populate results on page load
+        calculateTraining();
+
+        // --- GENERAL UI SCRIPT ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('#header a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoCat - Rise of Kingdoms Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121218; /* Near black for a deep, modern feel */
+        }
+        .brand-purple { color: #9D8DF1; }
+        .bg-brand-purple { background-color: #9D8DF1; }
+        .border-brand-purple { border-color: #9D8DF1; }
+        .bg-brand-gradient {
+            background-image: linear-gradient(to right, #9D8DF1, #B8CDF8);
+        }
+        .glassmorphism {
+            background: rgba(41, 37, 54, 0.5); /* Semi-transparent dark purple */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(157, 141, 241, 0.2);
+        }
+        .hero-bg {
+            background-color: #121218;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(157, 141, 241, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(80, 100, 220, 0.15), transparent 40%);
+        }
+        /* Custom scrollbar for a more integrated look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a22;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a5a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9D8DF1;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glassmorphism">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3">
+                    <img src="https://placehold.co/50x50/9D8DF1/ffffff?text=iC" alt="InfoCat Logo" class="h-10 w-10 rounded-full border-2 border-purple-400/50"
+                         onerror="this.onerror=null;this.src='https://placehold.co/50x50/9D8DF1/ffffff?text=iC';">
+                    <span class="text-2xl font-bold text-white">InfoCat</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#dashboard-preview" class="hover:text-brand-purple transition-colors duration-300">Dashboard</a>
+                    <a href="#calculators-preview" class="hover:text-brand-purple transition-colors duration-300">Calculators</a>
+                    <a href="#features" class="hover:text-brand-purple transition-colors duration-300">Features</a>
+                </nav>
+
+                <!-- Connect Button -->
+                <div class="hidden md:block">
+                    <a href="#" class="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring">
+                        <span class="absolute inset-0 border border-brand-purple rounded-lg"></span>
+                        <span class="block border border-gray-800 rounded-lg bg-gray-900 px-6 py-3 transition-transform active:bg-brand-purple/20 group-hover:-translate-x-1 group-hover:-translate-y-1">
+                            Connect with Discord
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4">
+            <a href="#dashboard-preview" class="block py-2 px-4 text-sm hover:bg-gray-700">Dashboard</a>
+            <a href="#calculators-preview" class="block py-2 px-4 text-sm hover:bg-gray-700">Calculators</a>
+            <a href="#features" class="block py-2 px-4 text-sm hover:bg-gray-700">Features</a>
+             <div class="px-4 mt-4">
+                 <a href="#" class="block w-full text-center bg-brand-purple text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300">
+                    Connect with Discord
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 hero-bg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
+                    Your Personal Rise of Kingdoms
+                    <span class="block bg-clip-text text-transparent bg-brand-gradient mt-2">Analyst</span>
+                </h1>
+                <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-gray-400">
+                    Track progress. Simplify Data. Optimize gameplay — with InfoCat.
+                </p>
+                <div class="mt-10 flex justify-center">
+                     <a href="#" class="text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 ease-in-out bg-brand-purple hover:shadow-lg hover:shadow-purple-500/50 transform hover:scale-105">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-20 bg-gray-900/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-white sm:text-4xl">All-in-One Tracking & Calculating</h2>
+                    <p class="mt-4 text-lg text-gray-400">Everything you need to level up your game, all in one place.</p>
+                </div>
+                
+                <!-- Trackers -->
+                <div class="mt-16">
+                    <h3 class="text-2xl font-bold text-center text-brand-purple mb-10">Trackers</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                        <!-- Feature Card -->
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                           <p class="text-5xl">⚡️</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Action Points</h4>
+                            <p class="mt-2 text-sm text-gray-400">Track usage and gains during off-season or KvK.</p>
+                        </div>
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                             <p class="text-5xl">🏆</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Honor & Barbs</h4>
+                            <p class="mt-2 text-sm text-gray-400">Monitor your daily honor and barb-to-honor ratio.</p>
+                        </div>
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                           <p class="text-5xl">⏱️</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Speedups</h4>
+                            <p class="mt-2 text-sm text-gray-400">Log gains and usage with a single daily screenshot.</p>
+                        </div>
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                           <p class="text-5xl">💎</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Materials</h4>
+                            <p class="mt-2 text-sm text-gray-400">Keep a running total of all your crafting materials.</p>
+                        </div>
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                            <p class="text-5xl">🌾</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Farms RSS</h4>
+                            <p class="mt-2 text-sm text-gray-400">Aggregate resources across all your farm accounts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculators -->
+                <div class="mt-20">
+                     <h3 class="text-2xl font-bold text-center text-brand-purple mb-10">Calculators</h3>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                             <p class="text-5xl">🗿</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Gold Heads</h4>
+                             <p class="mt-2 text-sm text-gray-400">Estimate sculptures needed to max your commanders.</p>
+                        </div>
+                         <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                           <p class="text-5xl">✈️</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Passports</h4>
+                            <p class="mt-2 text-sm text-gray-400">Calculate migration costs based on your power.</p>
+                        </div>
+                         <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                            <p class="text-5xl">⚔️</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Troop Training</h4>
+                            <p class="mt-2 text-sm text-gray-400">Find the resource and time cost for training armies.</p>
+                        </div>
+                        <div class="p-6 glassmorphism rounded-xl text-center hover:-translate-y-2 transition-transform duration-300">
+                             <p class="text-5xl">📊</p>
+                            <h4 class="mt-4 font-bold text-lg text-white">Power to Troops</h4>
+                            <p class="mt-2 text-sm text-gray-400">Convert power numbers into troop equivalents.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Preview -->
+        <section id="dashboard-preview" class="py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-white sm:text-4xl">Visualize Your Growth</h2>
+                    <p class="mt-4 text-lg text-gray-400">Your data, beautifully organized. See trends and spot opportunities.</p>
+                </div>
+
+                <div class="mt-16 p-4 sm:p-8 rounded-2xl glassmorphism border-2 border-brand-purple/20 shadow-2xl shadow-purple-900/20">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Mock Chart 1: AP Over Time -->
+                        <div class="col-span-1 lg:col-span-2 p-6 bg-gray-900/60 rounded-xl">
+                            <h4 class="font-bold text-white mb-4">AP Usage (Last 7 Days)</h4>
+                            <div class="h-64 flex items-end space-x-2 sm:space-x-4">
+                                <div class="w-full h-3/5 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.1s;"></div>
+                                <div class="w-full h-2/5 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.2s;"></div>
+                                <div class="w-full h-4/5 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.3s;"></div>
+                                <div class="w-full h-3/5 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.4s;"></div>
+                                <div class="w-full h-full bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.5s;"></div>
+                                <div class="w-full h-1/2 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.6s;"></div>
+                                <div class="w-full h-2/3 bg-purple-500 rounded-t-md animate-pulse" style="animation-delay: 0.7s;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Mock Chart 2: Speedup Distribution -->
+                        <div class="col-span-1 p-6 bg-gray-900/60 rounded-xl flex flex-col items-center justify-center">
+                            <h4 class="font-bold text-white mb-4">Speedup Inventory</h4>
+                            <div class="relative w-48 h-48">
+                                <svg class="w-full h-full" viewBox="0 0 36 36">
+                                    <path class="stroke-current text-purple-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+                                    <path class="stroke-current text-purple-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke-width="3" stroke-dasharray="75, 100"></path>
+                                     <path class="stroke-current text-indigo-400" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke-width="3" stroke-dasharray="40, 100" stroke-dashoffset="-25"></path>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-white">1,520d</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-sm text-gray-400">Total Speedups</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Calculators Preview -->
+        <section id="calculators-preview" class="py-20 bg-gray-900/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-white sm:text-4xl">Plan Your Next Move</h2>
+                    <p class="mt-4 text-lg text-gray-400">Powerful calculators to help you strategize effectively.</p>
+                </div>
+                <div class="mt-16 max-w-2xl mx-auto p-8 rounded-2xl glassmorphism">
+                    <h4 class="text-xl font-bold text-white mb-6 text-center">Passport Calculator</h4>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="power-input" class="text-sm font-medium text-gray-300">Your Current Power</label>
+                            <input type="text" id="power-input" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-brand-purple focus:border-brand-purple" placeholder="e.g., 55,000,000">
+                        </div>
+                        <div class="text-center">
+                             <span class="text-gray-400">Passports Required</span>
+                             <p class="text-5xl font-extrabold text-brand-purple mt-2">18</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                 <a href="#" class="flex items-center space-x-3 mb-6 md:mb-0">
+                    <img src="https://placehold.co/40x40/9D8DF1/ffffff?text=iC" alt="InfoCat Logo" class="h-8 w-8 rounded-full"
+                    onerror="this.onerror=null;this.src='https://placehold.co/40x40/9D8DF1/ffffff?text=iC';">
+                    <span class="text-xl font-bold text-white">InfoCat</span>
+                </a>
+                <p class="text-gray-400 text-sm">
+                    &copy; 2025 InfoCat. Not affiliated with Lilith Games.
+                </p>
+                <div class="flex space-x-6 mt-6 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <!-- Discord Icon -->
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8257-.618 1.32-.0825.2246-.1645.4491-.2506.6698-1.7951-.3405-3.5164-.3405-5.3115 0-.086-.2207-.1681-.4452-.2506-.6698-.1716-.4942-.407-.9446-.618-1.32a.0741.0741 0 00-.0785-.0371 19.7363 19.7363 0 00-4.8851 1.5152.069.069 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0825.0825 0 00.0825.0825c.9258.0041 1.83-.1962 2.6917-.539a.0775.0775 0 00.0435-.1235c-.486-.64-.8491-1.39-1.091-2.2259a.0748.0748 0 01.021-.0825c1.4883-.9845 2.5041-2.2259 3.0456-3.5678a.0741.0741 0 00-.012-.0865c-.417-.323-1.2823-.96-1.2823-.96s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253-2.5851.012-3.4118 1.42-3.4118 1.42l-.004.004-.021.021-.021.021-.004.004s.4819.523.8407.9845c.4611.5592.934.9804 1.4243 1.3712.2481.192.4835.38.7064.5634.6958.5832 1.5034 1.154 2.3785 1.7492a18.998 18.998 0 003.18.94.0741.0741 0 00.0825-.0165c.004-.004.004-.008.008-.012a10.8552 10.8552 0 00.2747-.2829 11.2372 11.2372 0 00.2587-.3322c.299-1.28.4984-2.61.5945-3.9939a.0741.0741 0 00-.029-.0618c-.16-.09-1.3619-.94-1.3619-.94s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253-2.5851.012-3.4118 1.42-3.4118 1.42l-.004.004-.021.021-.021.021-.004.004s.4819.523.8407.9845c.4611.5592.934.9804 1.4243 1.3712.2481.192.4835.38.7064.5634.6958.5832 1.5034 1.154 2.3785 1.7492 1.314.908 2.7686 1.4422 4.2922 1.59a.0741.0741 0 00.0865-.0578c.029-.14.0539-.28.0744-.42.1134-.76.1954-1.53.242-2.31.021-.32.033-.64.0415-.96.004-.13.008-.26.008-.39a.0741.0741 0 00-.016-.0492c-.1-.07-.33-.22-1.3413-.91-1.0238-.69-1.2823-.87-1.2823-.87s-.2829-.2207-.4423-.3322c-.244-.18-3.1535-2.253-3.1535-2.253l-.004-.004a17.424 17.424 0 01-3.387-2.02.0741.0741 0 00-.0946.012c-.219.24-.45.49-.6572.74a1.1732 1.1732 0 00-.1175.14c-.012.016-.021.033-.033.049a.0741.0741 0 00.008.0946c.132.1.332.22.4819.33.158.11.283.2.39.27l.004.004.004.004c.09.06.18.13.26.19.48.36.95.7 1.42 1.02l.004.004c.54.36 1.06.7 1.54 1.02.004.004.004.004.008.004.43.28.84.54 1.22.78l.004.004c.16.1.32.2.47.28.02.01.04.02.06.03.23.14.46.28.68.41.07.04.13.08.19.12.21.13.42.26.62.38.04.02.08.04.12.06.11.06.22.12.33.18.02.01.05.02.07.03.19.1.38.2.56.29.06.03.12.06.18.09.21.1.42.2.62.28.02.01.05.02.07.03.22.1.43.19.64.28a19.897 19.897 0 006.5794-1.3753.0741.0741 0 00.0618-.0946c-.23-1.04-1.07-4.83-1.07-4.83s-.012-.0452-.033-.0825z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Simple mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Add shadow to header on scroll
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-lg', 'shadow-purple-900/10');
+            } else {
+                header.classList.remove('shadow-lg', 'shadow-purple-900/10');
+            }
+        });
+    </script>
+
+</body>
+</html>

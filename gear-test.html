@@ -43,11 +43,12 @@
         #gear-modal::-webkit-scrollbar-track, #stats-output::-webkit-scrollbar-track { background: #2a2a35; }
         #gear-modal::-webkit-scrollbar-thumb, #stats-output::-webkit-scrollbar-thumb { background: #5a5a6a; }
         #gear-modal::-webkit-scrollbar-thumb:hover, #stats-output::-webkit-scrollbar-thumb:hover { background: #9D8DF1; }
-
+        
         .tooltip {
             visibility: hidden;
             opacity: 0;
             transition: opacity 0.2s, visibility 0.2s;
+            pointer-events: none;
         }
         .group:hover .tooltip {
             visibility: visible;
@@ -94,7 +95,7 @@
                         <p class="text-gray-500">Select equipment to see total stats...</p>
                     </div>
                     <div class="flex space-x-2 mt-6">
-                        <button id="set-all-5-button" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Set All to 5</button>
+                        <button id="set-all-5-button" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Set All Iconic Levels to 5</button>
                         <button id="reset-button" class="w-full bg-red-600/80 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Reset</button>
                     </div>
                 </div>
@@ -256,7 +257,7 @@
 "Accessory","Karuak’s War Drums","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","30","40","30","","https://i.postimg.cc/fyk7NTkS/wardrums.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","Whenever the wearer’s troop launches any type of basic attack, it has a 10% chance to grant 50 extra Rage to the wearer’s troop and up to 2 nearby allied troops. Cooldown: 3 seconds.","Whenever the wearer’s troop launches any type of basic attack, it has a 10% chance to grant 65 extra Rage to the wearer’s troop and up to 2 nearby allied troops. Cooldown: 3 seconds."
 "Accessory","Greatest Glory","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/tRmtzPm3/greatestglory.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","The wearer’s troop deals 5% more normal damage of all types.","The wearer’s troop deals 6.5% more normal damage of all types."
 "Accessory","Horn of Fury","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/zXbw2B99/hornoffury.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to gain 50 extra Rage.","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to gain 65 extra Rage."
-"Accessory","Mora’s Web","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/3R8CtZTB/morasweb.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to reduce the target’s Defense by 4% and the March Speed of the target’s cavalry units by 8%. Stacks up to 3 times. Each stack lasts 3 seconds.","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to reduce the target’s Defense by 5% and the March Speed of the target’s cavalry units by 10.5%. Stacks up to 3 times. Each stack lasts 3 seconds."
+"Accessory","Mora’s Web","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/3R8CtZTB/morasweb.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to reduce the target’s Defense by 4% and the March Speed of the target’s cavalry units by 8%. Stacks up to 3 times. Each stack lasts 3 seconds.","Whenever the wearer’s troop launches any type of basic attack, it has a 30% chance to reduce the target’s Defense by 5% and the March Speed of the target’s cavalry units by 10.5%. Stacks up to 3 times. Each stack lasts for 3 seconds."
 "Accessory","Seths’ Call","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","30","30","40","","https://i.postimg.cc/fL87p0Wh/sethscall.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","Whenever the wearer’s troop launches any type of basic attack, it has a 10% chance to grant a 10% Attack bonus to the wearer’s troop and up to 2 nearby allied troops for 3 seconds. Cooldown: 3 seconds.","Whenever the wearer’s troop launches any type of basic attack, it has a 10% chance to grant a 13% Attack bonus to the wearer’s troop and up to 2 nearby allied troops for 3 seconds. Cooldown: 3 seconds."
 "Accessory","Pendant of Eternal Night","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/pXwfwvvy/pendantofeternalnight.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","The wearer’s troop deals 5% more skill damage of all types.","The wearer’s troop deals 6.5% more skill damage of all types."
 "Accessory","Vengeance","Accessory","","Legendary","50000000","","","","","","","","","","","","","","","","","","","","","","","","40","40","40","","https://i.postimg.cc/MGD1fjQj/vengeance.png","Troop Base HP +3","Troop HP +1%","Unit Cap +1.5%","Damage to Rallied Armies/Garrisons +1.5%","Divine Might","","","","","","","","","","","","","","","","","","","","","","","","Troop Base HP 4","Troop HP 1.5%","Unit Cap 2%","Damage to Rallied Armies/Garrisons 2%","Divine Might","The wearer’s troop deals 8% more counterattack damage of all types.","The wearer’s troop deals 10.5% more counterattack damage of all types."
@@ -342,8 +343,8 @@
                             <div class="relative">
                                 <img src="${gear.Images}" alt="${gear.Gear_Name}" class="h-16 w-16 mx-auto rounded-md">
                                 <div class="absolute -top-1 -right-1 bg-gray-900 rounded-full px-1.5 py-0.5 text-xs font-bold border ${rarityClass}">${gear.Level.substring(0,1)}</div>
+                                ${gear.Level === 'Legendary' ? `<div class="absolute -bottom-1 -right-1 bg-brand-purple text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">${gear.level || 0}</div>` : ''}
                             </div>
-                            <p class="text-xs font-semibold mt-1">${gear.Gear_Name}</p>
                         ` : `
                             <div class="w-full h-full border-2 border-dashed border-gray-600 rounded-xl flex flex-col justify-center items-center">
                                 <p class="text-3xl text-gray-500">${icon}</p>
@@ -351,11 +352,11 @@
                             </div>
                         `}
                     </div>
-                    ${gear ? `
+                    ${gear && gear.Level === 'Legendary' ? `
                         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max p-2 glassmorphism rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 z-10">
-                           <button class="refine-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="-1">-</button>
+                           <button class="level-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="-1">-</button>
                            <span>Level: ${gear.level || 0}</span>
-                           <button class="refine-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="1">+</button>
+                           <button class="level-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="1">+</button>
                         </div>
                     ` : ''}
                 </div>
@@ -364,9 +365,9 @@
 
         function renderStats() {
             const totalStats = {};
-            const totalCosts = { "Gold": 0, "Leather": 0, "Iron_Ore": 0, "Ebony": 0, "Animal_Bone": 0 };
+            const totalCosts = { "Gold": 0, "Legendary": {}, "Epic": {}, "Elite": {}, "Advanced": {}, "Normal": {} };
             const allEffects = [];
-            const aggregatedEffects = {};
+            const aggregatedEffects = { percent: {}, flat: {} };
 
             const allStatKeys = [...statColumns.base, ...statColumns.refined];
             allStatKeys.forEach(key => totalStats[key] = 0);
@@ -374,18 +375,22 @@
             for (const gear of Object.values(selectedGear)) {
                 if (gear) {
                     totalCosts.Gold += gear.Gold_Cost || 0;
-                    const matRarity = gear.Level;
-                    if(matRarity === "Legendary") totalCosts["Legendary Materials"] = (totalCosts["Legendary Materials"] || 0) + gear['Material Cost'];
-                    else if(matRarity === "Epic") totalCosts["Epic Materials"] = (totalCosts["Epic Materials"] || 0) + gear['Material Cost'];
+                    
+                    const materials = { "Leather": gear.Leather, "Iron_Ore": gear.Iron_Ore, "Ebony": gear.Ebony, "Animal_Bone": gear.Animal_Bone };
+                    for (const [mat, amount] of Object.entries(materials)) {
+                        if (amount > 0) {
+                            if (totalCosts[gear.Level]) {
+                                totalCosts[gear.Level][mat] = (totalCosts[gear.Level][mat] || 0) + amount;
+                            }
+                        }
+                    }
 
-                    const level = gear.level || 0;
+                    const level = gear.Level === 'Legendary' ? (gear.level || 0) : 0;
                     
                     statColumns.base.forEach(baseKey => {
                         const refinedKey = 'Refined_' + baseKey;
                         const baseValue = gear[baseKey] || 0;
-                        const refinedValue = gear[refinedKey] || baseValue; // Fallback to base if no refined value
-                        
-                        // Linear interpolation for stats
+                        const refinedValue = gear[refinedKey] || baseValue;
                         const statValue = baseValue + (refinedValue - baseValue) * (level / 5);
                         
                         if (statValue > 0) {
@@ -398,12 +403,15 @@
                         if (gear[key]) {
                             const effect = gear[key];
                             allEffects.push({name: gear.Gear_Name, effect: effect});
-                            // Aggregate common effects
-                            const match = effect.match(/([a-zA-Z\s]+)\s*\+([\d.]+)%?/);
+                            const match = effect.match(/([a-zA-Z\s]+)\s*\+([\d.,]+)%?/);
                             if (match) {
                                 const effectName = match[1].trim();
-                                const effectValue = parseFloat(match[2]);
-                                aggregatedEffects[effectName] = (aggregatedEffects[effectName] || 0) + effectValue;
+                                const effectValue = parseFloat(match[2].replace(/,/g, ''));
+                                if(effect.includes('%')) {
+                                    aggregatedEffects.percent[effectName] = (aggregatedEffects.percent[effectName] || 0) + effectValue;
+                                } else {
+                                     aggregatedEffects.flat[effectName] = (aggregatedEffects.flat[effectName] || 0) + effectValue;
+                                }
                             }
                         }
                     });
@@ -419,17 +427,26 @@
             let hasContent = false;
             
             // Render Costs
-            const costEntries = Object.entries(totalCosts).filter(([, value]) => value > 0);
-            if (costEntries.length > 0) {
-                hasContent = true;
-                let costsHtml = `<h3 class="font-bold text-lg text-white">Total Crafting Costs</h3>`;
-                costsHtml += '<div class="space-y-1 pl-2">';
-                costEntries.forEach(([key, value]) => {
-                    costsHtml += `<div class="flex justify-between"><span>${key.replace(/_/g, ' ')}:</span> <span class="font-semibold">${value.toLocaleString()}</span></div>`;
-                });
-                costsHtml += '</div>';
-                statsOutput.innerHTML += costsHtml;
+            let costsHtml = `<h3 class="font-bold text-lg text-white">Total Crafting Costs</h3><div class="space-y-1 pl-2">`;
+            let hasCosts = false;
+            if(totalCosts.Gold > 0) {
+                costsHtml += `<div class="flex justify-between"><span>Gold:</span> <span class="font-semibold">${totalCosts.Gold.toLocaleString()}</span></div>`;
+                hasCosts = true;
             }
+            for(const rarity in totalCosts) {
+                if (rarity !== "Gold" && Object.keys(totalCosts[rarity]).length > 0) {
+                    hasCosts = true;
+                    for (const mat in totalCosts[rarity]) {
+                         costsHtml += `<div class="flex justify-between"><span>${rarity} ${mat.replace(/_/g, ' ')}:</span> <span class="font-semibold">${totalCosts[rarity][mat].toLocaleString()}</span></div>`;
+                    }
+                }
+            }
+            costsHtml += `</div>`;
+            if (hasCosts) {
+                statsOutput.innerHTML += costsHtml;
+                hasContent = true;
+            }
+
 
             // Render Stats
             const statsOrder = ['Infantry', 'Cavalry', 'Archer', 'Siege', 'Troop'];
@@ -449,20 +466,36 @@
                     statsOutput.innerHTML += statsHtml;
                 }
             });
-
-             // Render Aggregated Special Effects
-            const aggregatedEntries = Object.entries(aggregatedEffects);
-            if(aggregatedEntries.length > 0) {
+            
+            // Render Aggregated Special Effects
+            const aggregatedPercent = Object.entries(aggregatedEffects.percent);
+            const aggregatedFlat = Object.entries(aggregatedEffects.flat);
+            if(aggregatedPercent.length > 0 || aggregatedFlat.length > 0) {
                 hasContent = true;
                 let aggHtml = `<h3 class="font-bold text-lg text-white mt-4">Aggregated Special Effects</h3>`;
                 aggHtml += '<div class="space-y-1 pl-2">';
-                aggregatedEntries.forEach(([key, value]) => {
-                     aggHtml += `<div class="flex justify-between"><span>${key}:</span> <span class="font-semibold text-blue-400">+${value.toLocaleString()}${key !== 'Unit Cap' ? '%' : ''}</span></div>`;
+                aggregatedPercent.forEach(([key, value]) => {
+                     aggHtml += `<div class="flex justify-between"><span>${key}:</span> <span class="font-semibold text-blue-400">+${value.toFixed(2)}%</span></div>`;
+                });
+                 aggregatedFlat.forEach(([key, value]) => {
+                     aggHtml += `<div class="flex justify-between"><span>${key}:</span> <span class="font-semibold text-blue-400">+${value.toLocaleString()}</span></div>`;
                 });
                 aggHtml += '</div>';
                 statsOutput.innerHTML += aggHtml;
             }
             
+            // Render Individual Effects
+            if (allEffects.length > 0) {
+                 hasContent = true;
+                 let effectsHtml = `<h3 class="font-bold text-lg text-white mt-4">All Effects</h3>`;
+                 effectsHtml += '<div class="space-y-3 pl-2">';
+                 allEffects.forEach(({name, effect}) => {
+                     effectsHtml += `<div><span class="font-semibold text-sm brand-purple">${name}</span><p class="text-xs text-gray-300">${effect}</p></div>`;
+                 });
+                 effectsHtml += '</div>';
+                 statsOutput.innerHTML += effectsHtml;
+            }
+
             if (!hasContent) {
                 statsOutput.innerHTML = '<p class="text-gray-500">Select equipment to see total stats...</p>';
             }
@@ -498,7 +531,7 @@
         // --- EVENT HANDLERS ---
         function handleSlotClick(e) {
             const slotElement = e.target.closest('[data-slot]');
-            if (slotElement && !e.target.closest('.refine-btn')) {
+            if (slotElement && !e.target.closest('.level-btn')) {
                 const slot = slotElement.dataset.slot;
                 searchInput.value = '';
                 populateModal(slot);
@@ -517,12 +550,12 @@
             }
         }
         
-        function handleRefine(e) {
-             const refineButton = e.target.closest('.refine-btn');
-             if(refineButton) {
+        function handleLevelChange(e) {
+             const levelButton = e.target.closest('.level-btn');
+             if(levelButton) {
                  e.stopPropagation(); 
-                 const slot = refineButton.dataset.slot;
-                 const change = parseInt(refineButton.dataset.change, 10);
+                 const slot = levelButton.dataset.slot;
+                 const change = parseInt(levelButton.dataset.change, 10);
                  const gear = selectedGear[slot];
                  if(gear) {
                      let newLevel = (gear.level || 0) + change;
@@ -536,8 +569,9 @@
         
         function handleSetAll5() {
             for (const slot in selectedGear) {
-                if(selectedGear[slot]) {
-                    selectedGear[slot].level = 5;
+                const gear = selectedGear[slot];
+                if(gear && gear.Level === 'Legendary') {
+                    gear.level = 5;
                 }
             }
             renderAll();
@@ -564,7 +598,7 @@
                 renderAll();
 
                 layoutContainer.addEventListener('click', handleSlotClick);
-                layoutContainer.addEventListener('click', handleRefine);
+                layoutContainer.addEventListener('click', handleLevelChange);
                 closeModalButton.addEventListener('click', closeModal);
                 modalBackdrop.addEventListener('click', (e) => {
                     if(e.target === modalBackdrop) closeModal();

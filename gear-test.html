@@ -43,6 +43,16 @@
         #gear-modal::-webkit-scrollbar-track, #stats-output::-webkit-scrollbar-track { background: #2a2a35; }
         #gear-modal::-webkit-scrollbar-thumb, #stats-output::-webkit-scrollbar-thumb { background: #5a5a6a; }
         #gear-modal::-webkit-scrollbar-thumb:hover, #stats-output::-webkit-scrollbar-thumb:hover { background: #9D8DF1; }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        .group:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="text-gray-200">
@@ -83,7 +93,10 @@
                     <div id="stats-output" class="space-y-4 text-sm max-h-[60vh] overflow-y-auto pr-2">
                         <p class="text-gray-500">Select equipment to see total stats...</p>
                     </div>
-                    <button id="reset-button" class="mt-6 w-full bg-red-600/80 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Reset</button>
+                    <div class="flex space-x-2 mt-6">
+                        <button id="set-all-5-button" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Set All to 5</button>
+                        <button id="reset-button" class="w-full bg-red-600/80 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Reset</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -291,6 +304,7 @@
         const searchInput = document.getElementById('search-input');
         const closeModalButton = document.getElementById('close-modal-button');
         const resetButton = document.getElementById('reset-button');
+        const setAll5Button = document.getElementById('set-all-5-button');
 
         // --- RENDER FUNCTIONS ---
         function renderLayout() {
@@ -339,10 +353,9 @@
                     </div>
                     ${gear ? `
                         <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max p-2 glassmorphism rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 z-10">
-                            <label class="flex items-center gap-1 cursor-pointer">
-                                <input type="checkbox" class="refine-checkbox" data-slot="${slotKey}" ${gear.refined ? 'checked' : ''}>
-                                Refined
-                            </label>
+                           <button class="refine-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="-1">-</button>
+                           <span>Level: ${gear.level || 0}</span>
+                           <button class="refine-btn bg-gray-700 hover:bg-gray-600 rounded-full h-5 w-5" data-slot="${slotKey}" data-change="1">+</button>
                         </div>
                     ` : ''}
                 </div>
@@ -353,6 +366,7 @@
             const totalStats = {};
             const totalCosts = { "Gold": 0, "Leather": 0, "Iron_Ore": 0, "Ebony": 0, "Animal_Bone": 0 };
             const allEffects = [];
+            const aggregatedEffects = {};
 
             const allStatKeys = [...statColumns.base, ...statColumns.refined];
             allStatKeys.forEach(key => totalStats[key] = 0);
@@ -360,34 +374,47 @@
             for (const gear of Object.values(selectedGear)) {
                 if (gear) {
                     totalCosts.Gold += gear.Gold_Cost || 0;
-                    totalCosts.Leather += gear.Leather || 0;
-                    totalCosts.Iron_Ore += gear.Iron_Ore || 0;
-                    totalCosts.Ebony += gear.Ebony || 0;
-                    totalCosts.Animal_Bone += gear.Animal_Bone || 0;
+                    const matRarity = gear.Level;
+                    if(matRarity === "Legendary") totalCosts["Legendary Materials"] = (totalCosts["Legendary Materials"] || 0) + gear['Material Cost'];
+                    else if(matRarity === "Epic") totalCosts["Epic Materials"] = (totalCosts["Epic Materials"] || 0) + gear['Material Cost'];
 
-                    const statPrefix = gear.refined ? "Refined_" : "";
-                    const iconicPrefix = gear.refined ? "Refined_" : "";
-                    const accessoryPrefix = gear.refined ? "Refined_" : "";
-
+                    const level = gear.level || 0;
+                    
                     statColumns.base.forEach(baseKey => {
-                        const key = statPrefix + baseKey;
-                        if (gear[key] > 0) {
-                            totalStats[baseKey] = (totalStats[baseKey] || 0) + gear[key];
+                        const refinedKey = 'Refined_' + baseKey;
+                        const baseValue = gear[baseKey] || 0;
+                        const refinedValue = gear[refinedKey] || baseValue; // Fallback to base if no refined value
+                        
+                        // Linear interpolation for stats
+                        const statValue = baseValue + (refinedValue - baseValue) * (level / 5);
+                        
+                        if (statValue > 0) {
+                             totalStats[baseKey] = (totalStats[baseKey] || 0) + statValue;
                         }
                     });
 
-                    statColumns.iconic.forEach(baseKey => {
-                        const key = iconicPrefix + baseKey;
-                        if (gear[key]) allEffects.push({name: gear.Gear_Name, effect: gear[key]});
+                    const iconicKeys = level > 0 ? statColumns.refinedIconic : statColumns.iconic;
+                    iconicKeys.forEach(key => {
+                        if (gear[key]) {
+                            const effect = gear[key];
+                            allEffects.push({name: gear.Gear_Name, effect: effect});
+                            // Aggregate common effects
+                            const match = effect.match(/([a-zA-Z\s]+)\s*\+([\d.]+)%?/);
+                            if (match) {
+                                const effectName = match[1].trim();
+                                const effectValue = parseFloat(match[2]);
+                                aggregatedEffects[effectName] = (aggregatedEffects[effectName] || 0) + effectValue;
+                            }
+                        }
                     });
-                    
-                    statColumns.accessory.forEach(baseKey => {
-                         const key = accessoryPrefix + baseKey;
-                         if (gear[key]) allEffects.push({name: gear.Gear_Name, effect: gear[key]});
-                    });
+
+                    const accessoryKey = level > 0 ? 'Refined_Accessory_Effect' : 'Accessory_Effect';
+                    if (gear[accessoryKey]) {
+                        allEffects.push({name: gear.Gear_Name, effect: gear[accessoryKey]});
+                    }
                 }
             }
-
+            
             statsOutput.innerHTML = '';
             let hasContent = false;
             
@@ -422,19 +449,20 @@
                     statsOutput.innerHTML += statsHtml;
                 }
             });
-            
-            // Render Effects
-            if (allEffects.length > 0) {
-                 hasContent = true;
-                 let effectsHtml = `<h3 class="font-bold text-lg text-white mt-4">Special Effects</h3>`;
-                 effectsHtml += '<div class="space-y-3 pl-2">';
-                 allEffects.forEach(({name, effect}) => {
-                     effectsHtml += `<div><span class="font-semibold text-sm brand-purple">${name}</span><p class="text-xs text-gray-300">${effect}</p></div>`;
-                 });
-                 effectsHtml += '</div>';
-                 statsOutput.innerHTML += effectsHtml;
-            }
 
+             // Render Aggregated Special Effects
+            const aggregatedEntries = Object.entries(aggregatedEffects);
+            if(aggregatedEntries.length > 0) {
+                hasContent = true;
+                let aggHtml = `<h3 class="font-bold text-lg text-white mt-4">Aggregated Special Effects</h3>`;
+                aggHtml += '<div class="space-y-1 pl-2">';
+                aggregatedEntries.forEach(([key, value]) => {
+                     aggHtml += `<div class="flex justify-between"><span>${key}:</span> <span class="font-semibold text-blue-400">+${value.toLocaleString()}${key !== 'Unit Cap' ? '%' : ''}</span></div>`;
+                });
+                aggHtml += '</div>';
+                statsOutput.innerHTML += aggHtml;
+            }
+            
             if (!hasContent) {
                 statsOutput.innerHTML = '<p class="text-gray-500">Select equipment to see total stats...</p>';
             }
@@ -470,7 +498,7 @@
         // --- EVENT HANDLERS ---
         function handleSlotClick(e) {
             const slotElement = e.target.closest('[data-slot]');
-            if (slotElement && !e.target.classList.contains('refine-checkbox')) {
+            if (slotElement && !e.target.closest('.refine-btn')) {
                 const slot = slotElement.dataset.slot;
                 searchInput.value = '';
                 populateModal(slot);
@@ -482,7 +510,7 @@
             const gearElement = e.target.closest('[data-gear-name]');
             if (gearElement) {
                 const gearName = gearElement.dataset.gearName;
-                const newGear = { ...allGear.find(g => g.Gear_Name === gearName), refined: false };
+                const newGear = { ...allGear.find(g => g.Gear_Name === gearName), level: 0 };
                 selectedGear[currentSlot] = newGear;
                 closeModal();
                 renderAll();
@@ -490,16 +518,29 @@
         }
         
         function handleRefine(e) {
-             const refineCheckbox = e.target.closest('.refine-checkbox');
-             if(refineCheckbox) {
+             const refineButton = e.target.closest('.refine-btn');
+             if(refineButton) {
                  e.stopPropagation(); 
-                 const slot = refineCheckbox.dataset.slot;
+                 const slot = refineButton.dataset.slot;
+                 const change = parseInt(refineButton.dataset.change, 10);
                  const gear = selectedGear[slot];
                  if(gear) {
-                     gear.refined = refineCheckbox.checked;
+                     let newLevel = (gear.level || 0) + change;
+                     if (newLevel < 0) newLevel = 0;
+                     if (newLevel > 5) newLevel = 5;
+                     gear.level = newLevel;
                      renderAll();
                  }
              }
+        }
+        
+        function handleSetAll5() {
+            for (const slot in selectedGear) {
+                if(selectedGear[slot]) {
+                    selectedGear[slot].level = 5;
+                }
+            }
+            renderAll();
         }
 
         function closeModal() {
@@ -523,7 +564,7 @@
                 renderAll();
 
                 layoutContainer.addEventListener('click', handleSlotClick);
-                layoutContainer.addEventListener('change', handleRefine);
+                layoutContainer.addEventListener('click', handleRefine);
                 closeModalButton.addEventListener('click', closeModal);
                 modalBackdrop.addEventListener('click', (e) => {
                     if(e.target === modalBackdrop) closeModal();
@@ -531,6 +572,8 @@
                 gearModal.addEventListener('click', handleGearSelect);
                 searchInput.addEventListener('input', () => populateModal(currentSlot, searchInput.value));
                 resetButton.addEventListener('click', handleReset);
+                setAll5Button.addEventListener('click', handleSetAll5);
+                
             } catch (error) {
                 console.error("Failed to load or process gear data:", error);
                 layoutContainer.innerHTML = `<p class="text-red-500">Error: Could not process the embedded CSV data.</p>`;

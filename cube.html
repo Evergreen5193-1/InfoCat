@@ -44,6 +44,10 @@
             height: 100%;
             border-radius: 4px;
         }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="text-gray-200">
@@ -81,6 +85,11 @@
                 </div>
                 <div id="stats" class="grid grid-cols-2 gap-4 text-sm">
                     <!-- Stats will be populated here -->
+                </div>
+                 <div class="flex space-x-2 mt-4">
+                    <button id="plus2-button" class="w-full bg-yellow-600/80 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300" disabled>+2</button>
+                    <button id="dnf-button" class="w-full bg-red-600/80 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300" disabled>DNF</button>
+                    <button id="new-scramble-button" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">New Scramble</button>
                 </div>
             </div>
             <div class="p-6 glassmorphism rounded-2xl flex-grow flex flex-col min-h-0">
@@ -131,6 +140,9 @@
         const closeModalButton = document.getElementById('close-modal-button');
         const modalHistoryDisplay = document.getElementById('modal-history');
         const chartCanvas = document.getElementById('progress-chart');
+        const plus2Button = document.getElementById('plus2-button');
+        const dnfButton = document.getElementById('dnf-button');
+        const newScrambleButton = document.getElementById('new-scramble-button');
         let progressChart;
 
         // --- TIMER STATE ---
@@ -278,11 +290,15 @@
         }
 
         // --- TIMER LOGIC ---
-        function formatTime(ms) {
-            if (ms === 0) return '-';
-            const minutes = Math.floor(ms / 60000);
-            const seconds = Math.floor((ms % 60000) / 1000);
-            const milliseconds = Math.floor((ms % 1000) / 10);
+        function formatTime(solve) {
+            if (solve.penalty === 'DNF') return 'DNF';
+            if (!solve.time) return '-';
+            
+            const displayTime = solve.time + (solve.penalty === '+2' ? 2000 : 0);
+            
+            const minutes = Math.floor(displayTime / 60000);
+            const seconds = Math.floor((displayTime % 60000) / 1000);
+            const milliseconds = Math.floor((displayTime % 1000) / 10);
             
             let formatted = '';
             if (minutes > 0) {
@@ -291,12 +307,13 @@
                 formatted += `${seconds}.`;
             }
             formatted += milliseconds.toString().padStart(2, '0');
-            return formatted;
+            
+            return solve.penalty === '+2' ? formatted + '+' : formatted;
         }
 
         function updateTimer() {
             const elapsedTime = Date.now() - startTime;
-            timerDisplay.textContent = formatTime(elapsedTime);
+            timerDisplay.textContent = formatTime({time: elapsedTime, penalty: 'none'});
         }
 
         function startTimer() {
@@ -306,6 +323,8 @@
                 timerInterval = setInterval(updateTimer, 10);
                 timerDisplay.classList.remove('timer-ready');
                 timerDisplay.classList.add('timer-running');
+                plus2Button.disabled = true;
+                dnfButton.disabled = true;
             }
         }
 
@@ -325,7 +344,8 @@
             const newSolve = {
                 time: time,
                 scramble: scrambleDisplay.textContent,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                penalty: 'none' // none, +2, DNF
             };
             solves.unshift(newSolve);
             saveSolves();
@@ -337,6 +357,14 @@
             saveSolves();
             updateUI();
         }
+        
+        function applyPenalty(type) {
+            if (solves.length > 0 && solves[0].penalty === 'none') {
+                solves[0].penalty = type;
+                saveSolves();
+                updateUI();
+            }
+        }
 
         function calculateAverage(arr) {
             if (arr.length === 0) return 0;
@@ -346,9 +374,22 @@
 
         function calculateWcaAverage(count) {
             if (solves.length < count) return 0;
-            const recentSolves = solves.slice(0, count).map(s => s.time);
-            recentSolves.sort((a, b) => a - b);
-            const trimmed = recentSolves.slice(1, -1);
+            
+            const recentSolves = solves.slice(0, count);
+            const penalizedTimes = recentSolves.map(s => {
+                if (s.penalty === 'DNF') return Infinity;
+                if (s.penalty === '+2') return s.time + 2000;
+                return s.time;
+            });
+
+            const dnfCount = penalizedTimes.filter(t => t === Infinity).length;
+            if (dnfCount >= 2) return Infinity;
+
+            penalizedTimes.sort((a, b) => a - b);
+            const trimmed = penalizedTimes.slice(1, -1);
+            
+            if (trimmed.includes(Infinity)) return Infinity;
+
             return calculateAverage(trimmed);
         }
 
@@ -358,20 +399,20 @@
                 return;
             }
 
-            const times = solves.map(s => s.time);
-            const best = Math.min(...times);
+            const times = solves.map(s => s.penalty === 'DNF' ? Infinity : s.time);
+            const best = Math.min(...times.filter(t => t !== Infinity));
             const worst = Math.max(...times);
             const ao5 = calculateWcaAverage(5);
             const ao12 = calculateWcaAverage(12);
-            const sessionAvg = calculateAverage(times);
+            const sessionAvg = calculateAverage(times.filter(t => t !== Infinity));
             
             statsDisplay.innerHTML = `
-                <div class="font-semibold text-gray-400">Current:</div> <div class="text-right">${formatTime(times[0])}</div>
-                <div class="font-semibold text-gray-400">Best:</div> <div class="text-right">${formatTime(best)}</div>
-                <div class="font-semibold text-gray-400">Worst:</div> <div class="text-right">${formatTime(worst)}</div>
-                <div class="font-semibold text-gray-400">Ao5:</div> <div class="text-right">${formatTime(ao5)}</div>
-                <div class="font-semibold text-gray-400">Ao12:</div> <div class="text-right">${formatTime(ao12)}</div>
-                <div class="font-semibold text-gray-400">Session Avg:</div> <div class="text-right">${formatTime(sessionAvg)}</div>
+                <div class="font-semibold text-gray-400">Current:</div> <div class="text-right">${formatTime(solves[0])}</div>
+                <div class="font-semibold text-gray-400">Best:</div> <div class="text-right">${formatTime({time: best})}</div>
+                <div class="font-semibold text-gray-400">Worst:</div> <div class="text-right">${formatTime({time: worst, penalty: worst === Infinity ? 'DNF' : 'none'})}</div>
+                <div class="font-semibold text-gray-400">Ao5:</div> <div class="text-right">${formatTime({time: ao5, penalty: ao5 === Infinity ? 'DNF' : 'none'})}</div>
+                <div class="font-semibold text-gray-400">Ao12:</div> <div class="text-right">${formatTime({time: ao12, penalty: ao12 === Infinity ? 'DNF' : 'none'})}</div>
+                <div class="font-semibold text-gray-400">Session Avg:</div> <div class="text-right">${formatTime({time: sessionAvg})}</div>
             `;
         }
 
@@ -384,7 +425,7 @@
             displayElement.innerHTML = solves.map((solve, index) => `
                 <div class="flex justify-between items-center text-sm p-2 rounded-md hover:bg-gray-800/50">
                     <div>
-                        <span class="font-bold text-lg">${formatTime(solve.time)}</span>
+                        <span class="font-bold text-lg">${formatTime(solve)}</span>
                         <span class="text-xs text-gray-500 ml-2">${solve.scramble}</span>
                     </div>
                     <button class="delete-btn text-red-500 hover:text-red-400 font-bold" data-index="${index}">&times;</button>
@@ -398,7 +439,7 @@
             }
             
             const labels = solves.map((_, i) => i + 1).reverse();
-            const data = solves.map(s => s.time / 1000).reverse();
+            const data = solves.map(s => s.penalty === 'DNF' ? null : (s.time + (s.penalty === '+2' ? 2000 : 0)) / 1000).reverse();
 
             progressChart = new Chart(chartCanvas, {
                 type: 'line',
@@ -410,7 +451,8 @@
                         borderColor: '#9D8DF1',
                         backgroundColor: 'rgba(157, 141, 241, 0.2)',
                         fill: true,
-                        tension: 0.1
+                        tension: 0.1,
+                        spanGaps: true
                     }]
                 },
                 options: {
@@ -445,6 +487,8 @@
         function updateUI() {
             updateStats();
             updateHistory(historyDisplay);
+            plus2Button.disabled = !(solves.length > 0 && solves[0].penalty === 'none');
+            dnfButton.disabled = !(solves.length > 0 && solves[0].penalty === 'none');
         }
 
         // --- LOCAL STORAGE ---
@@ -488,9 +532,18 @@
             if (e.target.classList.contains('delete-btn')) {
                 const index = parseInt(e.target.dataset.index, 10);
                 deleteSolve(index);
-                updateHistory(modalHistoryDisplay); // Re-render modal history
-                updateChart(); // Re-render chart
+                updateHistory(modalHistoryDisplay); 
+                updateChart();
             }
+        });
+        
+        plus2Button.addEventListener('click', () => applyPenalty('+2'));
+        dnfButton.addEventListener('click', () => applyPenalty('DNF'));
+        newScrambleButton.addEventListener('click', () => {
+            if (solves.length > 0 && solves[0].penalty === 'none') {
+                 applyPenalty('DNF');
+            }
+            generateScramble();
         });
 
         dataButton.addEventListener('click', () => {

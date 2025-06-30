@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoCat - Cubing Timer</title>
+    <link rel="icon" type="image/png" href="infocat-smaller.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111118;
+        }
+        .brand-purple { color: #9D8DF1; }
+        .bg-brand-purple { background-color: #9D8DF1; }
+        .border-brand-purple { border-color: #9D8DF1; }
+        .glassmorphism {
+            background: rgba(30, 30, 40, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(157, 141, 241, 0.15);
+        }
+        .hero-bg {
+            background-color: #111118;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(157, 141, 241, 0.1), transparent);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a22; }
+        ::-webkit-scrollbar-thumb { background: #4a4a5a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9D8DF1; }
+
+        .timer-ready { color: #4ade80; } /* green-400 */
+        .timer-running { color: #f87171; } /* red-400 */
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header -->
+    <header id="header" class="sticky top-0 left-0 right-0 z-40 transition-all duration-300 glassmorphism">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="Infocat.png" alt="InfoCat Logo" class="h-12 w-12 rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/9D8DF1/ffffff?text=iC';">
+                    <span class="hidden sm:block text-2xl font-bold text-white">InfoCat</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#trackers" class="hover:text-brand-purple transition-colors duration-300">Trackers</a>
+                    <a href="calculators.html" class="hover:text-brand-purple transition-colors duration-300">Calculators</a>
+                    <a href="about.html" class="hover:text-brand-purple transition-colors duration-300">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Timer and Scramble -->
+            <div class="lg:col-span-2 flex flex-col items-center justify-center glassmorphism rounded-2xl p-8 min-h-[60vh]">
+                <div id="scramble" class="text-xl md:text-2xl lg:text-3xl font-semibold text-center mb-8 text-gray-300 tracking-wider">
+                    Loading scramble...
+                </div>
+                <div id="timer" class="text-7xl md:text-8xl lg:text-9xl font-bold tabular-nums transition-colors duration-200">
+                    0.00
+                </div>
+                 <div class="mt-8 text-center text-gray-500">
+                    <p>Hold SPACE to start, release to begin timer. Press any key to stop.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Stats and History -->
+            <div class="lg:col-span-1 space-y-8">
+                <div class="p-6 glassmorphism rounded-2xl">
+                    <h2 class="text-2xl font-bold text-white mb-4">Session Stats</h2>
+                    <div id="stats" class="grid grid-cols-2 gap-4 text-sm">
+                        <!-- Stats will be populated here -->
+                    </div>
+                </div>
+                <div class="p-6 glassmorphism rounded-2xl">
+                    <h2 class="text-2xl font-bold text-white mb-4">Solve History</h2>
+                    <div id="history" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+                        <p class="text-gray-500">No solves yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // --- DOM ELEMENTS ---
+        const timerDisplay = document.getElementById('timer');
+        const scrambleDisplay = document.getElementById('scramble');
+        const statsDisplay = document.getElementById('stats');
+        const historyDisplay = document.getElementById('history');
+
+        // --- TIMER STATE ---
+        let timerState = 'idle'; // idle, ready, running
+        let timerInterval;
+        let startTime;
+        let solves = [];
+
+        // --- SCRAMBLE LOGIC ---
+        function generateScramble() {
+            const moves = ['U', 'D', 'R', 'L', 'F', 'B'];
+            const modifiers = ['', "'", '2'];
+            const scrambleLength = 20;
+            let scramble = [];
+            let lastMove = '';
+
+            while (scramble.length < scrambleLength) {
+                let move = moves[Math.floor(Math.random() * moves.length)];
+                // Prevent redundant moves (e.g., R L R or U D U)
+                if (lastMove && moves.indexOf(move) >> 1 === moves.indexOf(lastMove) >> 1) {
+                    continue;
+                }
+                lastMove = move;
+                let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+                scramble.push(move + modifier);
+            }
+            scrambleDisplay.textContent = scramble.join(' ');
+        }
+
+        // --- TIMER LOGIC ---
+        function formatTime(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            const milliseconds = Math.floor((ms % 1000) / 10);
+            
+            let formatted = '';
+            if (minutes > 0) {
+                formatted += `${minutes}:${seconds.toString().padStart(2, '0')}.`;
+            } else {
+                formatted += `${seconds}.`;
+            }
+            formatted += milliseconds.toString().padStart(2, '0');
+            return formatted;
+        }
+
+        function updateTimer() {
+            const elapsedTime = Date.now() - startTime;
+            timerDisplay.textContent = formatTime(elapsedTime);
+        }
+
+        function startTimer() {
+            if (timerState === 'ready') {
+                timerState = 'running';
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 10);
+                timerDisplay.classList.remove('timer-ready');
+                timerDisplay.classList.add('timer-running');
+            }
+        }
+
+        function stopTimer() {
+            if (timerState === 'running') {
+                timerState = 'idle';
+                clearInterval(timerInterval);
+                const solveTime = Date.now() - startTime;
+                addSolve(solveTime);
+                generateScramble();
+                timerDisplay.classList.remove('timer-running');
+            }
+        }
+
+        // --- DATA & STATS LOGIC ---
+        function addSolve(time) {
+            const newSolve = {
+                time: time,
+                scramble: scrambleDisplay.textContent,
+                date: new Date().toISOString()
+            };
+            solves.unshift(newSolve);
+            saveSolves();
+            updateUI();
+        }
+
+        function deleteSolve(index) {
+            solves.splice(index, 1);
+            saveSolves();
+            updateUI();
+        }
+
+        function calculateAverage(arr) {
+            if (arr.length === 0) return 0;
+            const sum = arr.reduce((a, b) => a + b, 0);
+            return sum / arr.length;
+        }
+
+        function calculateWcaAverage(count) {
+            if (solves.length < count) return 0;
+            const recentSolves = solves.slice(0, count).map(s => s.time);
+            recentSolves.sort((a, b) => a - b);
+            const trimmed = recentSolves.slice(1, -1);
+            return calculateAverage(trimmed);
+        }
+
+        function updateStats() {
+            if (solves.length === 0) {
+                statsDisplay.innerHTML = '<p class="col-span-2 text-gray-500">No stats yet.</p>';
+                return;
+            }
+
+            const times = solves.map(s => s.time);
+            const best = Math.min(...times);
+            const worst = Math.max(...times);
+            const ao5 = calculateWcaAverage(5);
+            const ao12 = calculateWcaAverage(12);
+            const sessionAvg = calculateAverage(times);
+            
+            statsDisplay.innerHTML = `
+                <div class="font-semibold text-gray-400">Current:</div> <div class="text-right">${formatTime(times[0])}</div>
+                <div class="font-semibold text-gray-400">Best:</div> <div class="text-right">${formatTime(best)}</div>
+                <div class="font-semibold text-gray-400">Worst:</div> <div class="text-right">${formatTime(worst)}</div>
+                <div class="font-semibold text-gray-400">Ao5:</div> <div class="text-right">${ao5 > 0 ? formatTime(ao5) : '-'}</div>
+                <div class="font-semibold text-gray-400">Ao12:</div> <div class="text-right">${ao12 > 0 ? formatTime(ao12) : '-'}</div>
+                <div class="font-semibold text-gray-400">Session Avg:</div> <div class="text-right">${formatTime(sessionAvg)}</div>
+            `;
+        }
+
+        function updateHistory() {
+            if (solves.length === 0) {
+                historyDisplay.innerHTML = '<p class="text-gray-500">No solves yet.</p>';
+                return;
+            }
+
+            historyDisplay.innerHTML = solves.map((solve, index) => `
+                <div class="flex justify-between items-center text-sm p-2 rounded-md hover:bg-gray-800/50">
+                    <div>
+                        <span class="font-bold text-lg">${formatTime(solve.time)}</span>
+                        <span class="text-xs text-gray-500 ml-2">${solve.scramble}</span>
+                    </div>
+                    <button class="delete-btn text-red-500 hover:text-red-400 font-bold" data-index="${index}">&times;</button>
+                </div>
+            `).join('');
+        }
+        
+        function updateUI() {
+            updateStats();
+            updateHistory();
+        }
+
+        // --- LOCAL STORAGE ---
+        function saveSolves() {
+            localStorage.setItem('infocatCubingSolves', JSON.stringify(solves));
+        }
+
+        function loadSolves() {
+            const savedSolves = localStorage.getItem('infocatCubingSolves');
+            if (savedSolves) {
+                solves = JSON.parse(savedSolves);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && timerState === 'idle') {
+                timerState = 'ready';
+                timerDisplay.classList.add('timer-ready');
+            } else if (timerState === 'running') {
+                stopTimer();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space' && timerState === 'ready') {
+                startTimer();
+            }
+        });
+        
+        historyDisplay.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const index = parseInt(e.target.dataset.index, 10);
+                deleteSolve(index);
+            }
+        });
+
+        // --- INITIALIZATION ---
+        function init() {
+            loadSolves();
+            generateScramble();
+            updateUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

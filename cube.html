@@ -14,6 +14,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #111118;
+            overflow: hidden; /* Prevent main page scrolling */
         }
         .brand-purple { color: #9D8DF1; }
         .bg-brand-purple { background-color: #9D8DF1; }
@@ -53,7 +54,7 @@
 
     <main class="h-screen w-screen grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-8">
         <!-- Left Column: Timer, Scramble, Cube Graphic -->
-        <div class="lg:col-span-2 flex flex-col items-center justify-center glassmorphism rounded-2xl p-4 sm:p-8 min-h-[50vh] lg:min-h-0">
+        <div id="timer-area" class="lg:col-span-2 flex flex-col items-center justify-center glassmorphism rounded-2xl p-4 sm:p-8 min-h-[50vh] lg:min-h-0">
             <div id="scramble" class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-center mb-6 text-gray-300 tracking-wider">
                 Loading scramble...
             </div>
@@ -64,7 +65,7 @@
                 0.00
             </div>
             <div class="mt-8 text-center text-gray-500">
-                <p>Hold SPACE to start, release to begin timer. Press any key to stop.</p>
+                <p>Hold SPACE or TAP & HOLD to start. Release or tap again to stop.</p>
             </div>
         </div>
 
@@ -128,6 +129,7 @@
     
     <script>
         // --- DOM ELEMENTS ---
+        const timerArea = document.getElementById('timer-area');
         const timerDisplay = document.getElementById('timer');
         const scrambleDisplay = document.getElementById('scramble');
         const statsDisplay = document.getElementById('stats');
@@ -502,7 +504,24 @@
             }
         }
 
-        // --- EVENT LISTENERS ---
+        // --- EVENT HANDLERS ---
+        function handleTouchStart(e) {
+            e.preventDefault();
+            if (timerState === 'idle') {
+                timerState = 'ready';
+                timerDisplay.classList.add('timer-ready');
+            } else if (timerState === 'running') {
+                stopTimer();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            e.preventDefault();
+            if (timerState === 'ready') {
+                startTimer();
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
             if (e.code === 'Space' && timerState === 'idle') {
@@ -519,6 +538,9 @@
                 startTimer();
             }
         });
+        
+        timerArea.addEventListener('touchstart', handleTouchStart, { passive: false });
+        timerArea.addEventListener('touchend', handleTouchEnd, { passive: false });
         
         historyDisplay.addEventListener('click', (e) => {
             if (e.target.classList.contains('delete-btn')) {

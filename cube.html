@@ -6,6 +6,7 @@
     <title>InfoCat - Cubing Timer</title>
     <link rel="icon" type="image/png" href="infocat-smaller.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -13,20 +14,16 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #111118;
+            overflow: hidden; /* Prevent main page scrolling */
         }
         .brand-purple { color: #9D8DF1; }
         .bg-brand-purple { background-color: #9D8DF1; }
         .border-brand-purple { border-color: #9D8DF1; }
         .glassmorphism {
-            background: rgba(30, 30, 40, 0.5);
+            background: rgba(30, 30, 40, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(157, 141, 241, 0.15);
-        }
-        .hero-bg {
-            background-color: #111118;
-            background-image: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(157, 141, 241, 0.1), transparent);
         }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #1a1a22; }
@@ -35,60 +32,91 @@
 
         .timer-ready { color: #4ade80; } /* green-400 */
         .timer-running { color: #f87171; } /* red-400 */
+
+        .cube-face {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px;
+        }
+        .sticker {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="text-gray-200">
 
-    <!-- Header -->
-    <header id="header" class="sticky top-0 left-0 right-0 z-40 transition-all duration-300 glassmorphism">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <a href="index.html" class="flex items-center space-x-3">
-                    <img src="Infocat.png" alt="InfoCat Logo" class="h-12 w-12 rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/9D8DF1/ffffff?text=iC';">
-                    <span class="hidden sm:block text-2xl font-bold text-white">InfoCat</span>
-                </a>
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="index.html#trackers" class="hover:text-brand-purple transition-colors duration-300">Trackers</a>
-                    <a href="calculators.html" class="hover:text-brand-purple transition-colors duration-300">Calculators</a>
-                    <a href="about.html" class="hover:text-brand-purple transition-colors duration-300">About</a>
-                </nav>
+    <main class="h-screen w-screen grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
+        <!-- Left Column: Timer, Scramble, Cube Graphic -->
+        <div class="lg:col-span-2 flex flex-col items-center justify-center glassmorphism rounded-2xl p-8">
+            <div id="scramble" class="text-xl md:text-2xl lg:text-3xl font-semibold text-center mb-6 text-gray-300 tracking-wider">
+                Loading scramble...
+            </div>
+            <div id="cube-visualization" class="mb-6 hidden">
+                <!-- Cube graphic will be inserted here by JS -->
+            </div>
+            <div id="timer" class="text-7xl md:text-8xl lg:text-9xl font-bold tabular-nums transition-colors duration-200">
+                0.00
+            </div>
+            <div class="mt-8 text-center text-gray-500">
+                <p>Hold SPACE to start, release to begin timer. Press any key to stop.</p>
             </div>
         </div>
-    </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Left Column: Timer and Scramble -->
-            <div class="lg:col-span-2 flex flex-col items-center justify-center glassmorphism rounded-2xl p-8 min-h-[60vh]">
-                <div id="scramble" class="text-xl md:text-2xl lg:text-3xl font-semibold text-center mb-8 text-gray-300 tracking-wider">
-                    Loading scramble...
+        <!-- Right Column: Stats and History -->
+        <div class="flex flex-col space-y-8">
+            <div class="p-6 glassmorphism rounded-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-white">Session Stats</h2>
+                    <div class="flex space-x-2">
+                        <button id="vis-toggle-button" class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold py-2 px-3 rounded-lg transition-colors duration-300">
+                            Show Cube
+                        </button>
+                        <button id="data-button" class="bg-brand-purple hover:bg-opacity-90 text-white text-sm font-bold py-2 px-3 rounded-lg transition-colors duration-300">
+                            More Data
+                        </button>
+                    </div>
                 </div>
-                <div id="timer" class="text-7xl md:text-8xl lg:text-9xl font-bold tabular-nums transition-colors duration-200">
-                    0.00
-                </div>
-                 <div class="mt-8 text-center text-gray-500">
-                    <p>Hold SPACE to start, release to begin timer. Press any key to stop.</p>
+                <div id="stats" class="grid grid-cols-2 gap-4 text-sm">
+                    <!-- Stats will be populated here -->
                 </div>
             </div>
-
-            <!-- Right Column: Stats and History -->
-            <div class="lg:col-span-1 space-y-8">
-                <div class="p-6 glassmorphism rounded-2xl">
-                    <h2 class="text-2xl font-bold text-white mb-4">Session Stats</h2>
-                    <div id="stats" class="grid grid-cols-2 gap-4 text-sm">
-                        <!-- Stats will be populated here -->
-                    </div>
-                </div>
-                <div class="p-6 glassmorphism rounded-2xl">
-                    <h2 class="text-2xl font-bold text-white mb-4">Solve History</h2>
-                    <div id="history" class="space-y-2 max-h-96 overflow-y-auto pr-2">
-                        <p class="text-gray-500">No solves yet.</p>
-                    </div>
+            <div class="p-6 glassmorphism rounded-2xl flex-grow flex flex-col min-h-0">
+                <h2 class="text-2xl font-bold text-white mb-4">Solve History</h2>
+                <div id="history" class="space-y-2 flex-grow overflow-y-auto pr-2">
+                    <p class="text-gray-500">No solves yet.</p>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Data Modal -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4">
+        <div id="modal-content" class="glassmorphism rounded-2xl w-full max-w-6xl max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h2 id="modal-title" class="text-xl font-bold text-white">Full Session Data</h2>
+                <button id="close-modal-button" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div class="flex-grow p-4 grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto">
+                <div class="lg:col-span-2">
+                    <h3 class="text-lg font-bold mb-4">Progress Over Time</h3>
+                    <div class="relative h-96">
+                        <canvas id="progress-chart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="p-6 bg-gray-900/50 rounded-xl">
+                        <h3 class="text-lg font-bold mb-4">Full Solve History</h3>
+                        <div id="modal-history" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+                            <p class="text-gray-500">No solves yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script>
         // --- DOM ELEMENTS ---
@@ -96,6 +124,14 @@
         const scrambleDisplay = document.getElementById('scramble');
         const statsDisplay = document.getElementById('stats');
         const historyDisplay = document.getElementById('history');
+        const cubeVisContainer = document.getElementById('cube-visualization');
+        const visToggleButton = document.getElementById('vis-toggle-button');
+        const dataButton = document.getElementById('data-button');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const modalHistoryDisplay = document.getElementById('modal-history');
+        const chartCanvas = document.getElementById('progress-chart');
+        let progressChart;
 
         // --- TIMER STATE ---
         let timerState = 'idle'; // idle, ready, running
@@ -103,29 +139,147 @@
         let startTime;
         let solves = [];
 
-        // --- SCRAMBLE LOGIC ---
+        // --- CUBE STATE & LOGIC ---
+        let cubeState = {};
+        const colors = { U: '#FFFFFF', D: '#FFD700', L: '#FF8C00', R: '#DC143C', F: '#009E60', B: '#0051BA' };
+
+        function resetCube() {
+            cubeState = {
+                U: Array(9).fill('U'), D: Array(9).fill('D'), L: Array(9).fill('L'),
+                R: Array(9).fill('R'), F: Array(9).fill('F'), B: Array(9).fill('B')
+            };
+        }
+
+        function rotateFace(face, clockwise) {
+            const faceArr = cubeState[face];
+            const temp = [...faceArr];
+            const indices = clockwise ? [6, 3, 0, 7, 4, 1, 8, 5, 2] : [2, 5, 8, 1, 4, 7, 0, 3, 6];
+            for (let i = 0; i < 9; i++) {
+                faceArr[i] = temp[indices[i]];
+            }
+        }
+
+        function move(notation) {
+            const move = notation[0];
+            const modifier = notation[1] || '';
+            const turns = modifier === '2' ? 2 : (modifier === "'" ? 3 : 1);
+
+            for (let i = 0; i < turns; i++) {
+                rotateFace(move, true);
+                const temp = {};
+                if (move === 'U') {
+                    ['F', 'R', 'B', 'L'].forEach(f => temp[f] = [...cubeState[f]]);
+                    for(let j=0; j<3; j++) {
+                        cubeState.F[j] = temp.R[j];
+                        cubeState.R[j] = temp.B[j];
+                        cubeState.B[j] = temp.L[j];
+                        cubeState.L[j] = temp.F[j];
+                    }
+                } else if (move === 'D') {
+                    ['F', 'L', 'B', 'R'].forEach(f => temp[f] = [...cubeState[f]]);
+                     for(let j=6; j<9; j++) {
+                        cubeState.F[j] = temp.L[j];
+                        cubeState.L[j] = temp.B[j];
+                        cubeState.B[j] = temp.R[j];
+                        cubeState.R[j] = temp.F[j];
+                    }
+                } else if (move === 'R') {
+                     ['U', 'B', 'D', 'F'].forEach(f => temp[f] = [...cubeState[f]]);
+                     for(let j=0; j<3; j++) {
+                        cubeState.U[j*3+2] = temp.F[j*3+2];
+                        cubeState.B[j*3] = temp.U[8-j*3];
+                        cubeState.D[j*3+2] = temp.B[j*3];
+                        cubeState.F[j*3+2] = temp.D[j*3+2];
+                     }
+                } else if (move === 'L') {
+                    ['U', 'F', 'D', 'B'].forEach(f => temp[f] = [...cubeState[f]]);
+                    for(let j=0; j<3; j++) {
+                        cubeState.U[j*3] = temp.B[8-j*3];
+                        cubeState.F[j*3] = temp.U[j*3];
+                        cubeState.D[j*3] = temp.F[j*3];
+                        cubeState.B[8-j*3] = temp.D[j*3];
+                    }
+                } else if (move === 'F') {
+                     ['U', 'R', 'D', 'L'].forEach(f => temp[f] = [...cubeState[f]]);
+                     for(let j=0; j<3; j++) {
+                        cubeState.U[j+6] = temp.L[8-j*3];
+                        cubeState.R[j*3] = temp.U[j+6];
+                        cubeState.D[2-j] = temp.R[j*3];
+                        cubeState.L[8-j*3] = temp.D[2-j];
+                     }
+                } else if (move === 'B') {
+                    ['U', 'L', 'D', 'R'].forEach(f => temp[f] = [...cubeState[f]]);
+                    for(let j=0; j<3; j++) {
+                        cubeState.U[2-j] = temp.R[j*3+2];
+                        cubeState.L[j*3] = temp.U[2-j];
+                        cubeState.D[j+6] = temp.L[j*3];
+                        cubeState.R[j*3+2] = temp.D[j+6];
+                    }
+                }
+            }
+        }
+
+        function renderCube() {
+            const layout = [
+                { face: 'U', row: 1, col: 2 },
+                { face: 'L', row: 2, col: 1 },
+                { face: 'F', row: 2, col: 2 },
+                { face: 'R', row: 2, col: 3 },
+                { face: 'B', row: 2, col: 4 },
+                { face: 'D', row: 3, col: 2 },
+            ];
+
+            cubeVisContainer.innerHTML = `
+                <div class="grid grid-cols-4 gap-1" style="width: 160px; height: 120px;">
+                    ${layout.map(({face, row, col}) => `
+                        <div class="cube-face" style="grid-row: ${row}; grid-column: ${col};">
+                            ${cubeState[face].map(color => `<div class="sticker" style="background-color: ${colors[color]}"></div>`).join('')}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function applyScramble(scrambleStr) {
+            resetCube();
+            scrambleStr.split(' ').forEach(m => move(m));
+            renderCube();
+        }
+
+
+        // --- WCA SCRAMBLE LOGIC ---
         function generateScramble() {
-            const moves = ['U', 'D', 'R', 'L', 'F', 'B'];
-            const modifiers = ['', "'", '2'];
+            const moves = ["U", "D", "L", "R", "F", "B"];
+            const modifiers = ["", "'", "2"];
             const scrambleLength = 20;
             let scramble = [];
-            let lastMove = '';
+            let lastAxis = -1;
+
+            const getAxis = (move) => {
+                if (['U', 'D'].includes(move)) return 0;
+                if (['L', 'R'].includes(move)) return 1;
+                if (['F', 'B'].includes(move)) return 2;
+            };
 
             while (scramble.length < scrambleLength) {
-                let move = moves[Math.floor(Math.random() * moves.length)];
-                // Prevent redundant moves (e.g., R L R or U D U)
-                if (lastMove && moves.indexOf(move) >> 1 === moves.indexOf(lastMove) >> 1) {
-                    continue;
-                }
-                lastMove = move;
+                let move, axis;
+                do {
+                    move = moves[Math.floor(Math.random() * moves.length)];
+                    axis = getAxis(move);
+                } while (axis === lastAxis);
+                
+                lastAxis = axis;
                 let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
                 scramble.push(move + modifier);
             }
-            scrambleDisplay.textContent = scramble.join(' ');
+            const newScramble = scramble.join(' ');
+            scrambleDisplay.textContent = newScramble;
+            applyScramble(newScramble);
         }
 
         // --- TIMER LOGIC ---
         function formatTime(ms) {
+            if (ms === 0) return '-';
             const minutes = Math.floor(ms / 60000);
             const seconds = Math.floor((ms % 60000) / 1000);
             const milliseconds = Math.floor((ms % 1000) / 10);
@@ -215,19 +369,19 @@
                 <div class="font-semibold text-gray-400">Current:</div> <div class="text-right">${formatTime(times[0])}</div>
                 <div class="font-semibold text-gray-400">Best:</div> <div class="text-right">${formatTime(best)}</div>
                 <div class="font-semibold text-gray-400">Worst:</div> <div class="text-right">${formatTime(worst)}</div>
-                <div class="font-semibold text-gray-400">Ao5:</div> <div class="text-right">${ao5 > 0 ? formatTime(ao5) : '-'}</div>
-                <div class="font-semibold text-gray-400">Ao12:</div> <div class="text-right">${ao12 > 0 ? formatTime(ao12) : '-'}</div>
+                <div class="font-semibold text-gray-400">Ao5:</div> <div class="text-right">${formatTime(ao5)}</div>
+                <div class="font-semibold text-gray-400">Ao12:</div> <div class="text-right">${formatTime(ao12)}</div>
                 <div class="font-semibold text-gray-400">Session Avg:</div> <div class="text-right">${formatTime(sessionAvg)}</div>
             `;
         }
 
-        function updateHistory() {
+        function updateHistory(displayElement) {
             if (solves.length === 0) {
-                historyDisplay.innerHTML = '<p class="text-gray-500">No solves yet.</p>';
+                displayElement.innerHTML = '<p class="text-gray-500">No solves yet.</p>';
                 return;
             }
 
-            historyDisplay.innerHTML = solves.map((solve, index) => `
+            displayElement.innerHTML = solves.map((solve, index) => `
                 <div class="flex justify-between items-center text-sm p-2 rounded-md hover:bg-gray-800/50">
                     <div>
                         <span class="font-bold text-lg">${formatTime(solve.time)}</span>
@@ -238,9 +392,59 @@
             `).join('');
         }
         
+        function updateChart() {
+            if (progressChart) {
+                progressChart.destroy();
+            }
+            
+            const labels = solves.map((_, i) => i + 1).reverse();
+            const data = solves.map(s => s.time / 1000).reverse();
+
+            progressChart = new Chart(chartCanvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Solve Time (s)',
+                        data: data,
+                        borderColor: '#9D8DF1',
+                        backgroundColor: 'rgba(157, 141, 241, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time (seconds)',
+                                color: '#9CA3AF'
+                            },
+                            ticks: { color: '#9CA3AF' }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Solve Number',
+                                color: '#9CA3AF'
+                            },
+                            ticks: { color: '#9CA3AF' }
+                        }
+                    }
+                }
+            });
+        }
+        
         function updateUI() {
             updateStats();
-            updateHistory();
+            updateHistory(historyDisplay);
         }
 
         // --- LOCAL STORAGE ---
@@ -257,6 +461,7 @@
 
         // --- EVENT LISTENERS ---
         document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
             if (e.code === 'Space' && timerState === 'idle') {
                 timerState = 'ready';
                 timerDisplay.classList.add('timer-ready');
@@ -266,6 +471,7 @@
         });
 
         document.addEventListener('keyup', (e) => {
+            if (e.target.tagName === 'INPUT') return;
             if (e.code === 'Space' && timerState === 'ready') {
                 startTimer();
             }
@@ -276,6 +482,32 @@
                 const index = parseInt(e.target.dataset.index, 10);
                 deleteSolve(index);
             }
+        });
+
+        modalHistoryDisplay.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const index = parseInt(e.target.dataset.index, 10);
+                deleteSolve(index);
+                updateHistory(modalHistoryDisplay); // Re-render modal history
+                updateChart(); // Re-render chart
+            }
+        });
+
+        dataButton.addEventListener('click', () => {
+            modalBackdrop.classList.remove('hidden');
+            updateHistory(modalHistoryDisplay);
+            updateChart();
+        });
+        closeModalButton.addEventListener('click', () => modalBackdrop.classList.add('hidden'));
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) {
+                modalBackdrop.classList.add('hidden');
+            }
+        });
+
+        visToggleButton.addEventListener('click', () => {
+            const isHidden = cubeVisContainer.classList.toggle('hidden');
+            visToggleButton.textContent = isHidden ? 'Show Cube' : 'Hide Cube';
         });
 
         // --- INITIALIZATION ---

@@ -46,6 +46,13 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #9D8DF1;
         }
+        /* Toggle Switch CSS */
+        input:checked ~ .dot {
+            transform: translateX(100%);
+        }
+        input:checked ~ .block {
+            background-color: #9D8DF1;
+        }
     </style>
 </head>
 <body class="text-gray-200">
@@ -114,8 +121,20 @@
                     <div id="passports" class="p-8 glassmorphism rounded-2xl">
                         <h2 class="text-2xl font-bold text-white mb-6">✈️ Passport Calculator</h2>
                         <div class="space-y-4">
-                            <label for="power-input" class="text-sm font-medium text-gray-300">Your Current Power</label>
+                            <label for="passport-power-input" class="text-sm font-medium text-gray-300">Your Current Power</label>
                             <input type="number" id="passport-power-input" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 55000000">
+                        </div>
+                        <div class="mt-4">
+                            <label for="same-kvk-toggle" class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="same-kvk-toggle" class="sr-only">
+                                    <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                                </div>
+                                <div class="ml-3 text-gray-300 text-sm font-medium">
+                                    Same-KVK / Vacation Ticket
+                                </div>
+                            </label>
                         </div>
                         <div class="mt-6 border-t border-gray-700 pt-6">
                             <span class="text-gray-400 text-sm">Passports Required</span>
@@ -239,6 +258,9 @@
                          <div class="mt-6 border-t border-gray-700 pt-6">
                              <span class="text-gray-400 text-sm">Troops You Can Train</span>
                              <p id="troops-from-speedups-result" class="text-5xl font-extrabold text-brand-purple mt-1">0</p>
+                             <div id="speedup-extra-results" class="mt-4 space-y-3">
+                                <!-- Extra results injected here -->
+                             </div>
                         </div>
                     </div>
                    
@@ -269,26 +291,26 @@
     <script>
         // --- DATA CONSTANTS (from Python file) ---
         const MIGRATION_DATA = [
-            {"power_min": 1, "power_max": 9999999, "normal": 1},
-            {"power_min": 10000000, "power_max": 14999999, "normal": 2},
-            {"power_min": 15000000, "power_max": 19999999, "normal": 3},
-            {"power_min": 20000000, "power_max": 24999999, "normal": 4},
-            {"power_min": 25000000, "power_max": 29999999, "normal": 6},
-            {"power_min": 30000000, "power_max": 34999999, "normal": 9},
-            {"power_min": 35000000, "power_max": 39999999, "normal": 12},
-            {"power_min": 40000000, "power_max": 44999999, "normal": 15},
-            {"power_min": 45000000, "power_max": 49999999, "normal": 20},
-            {"power_min": 50000000, "power_max": 54999999, "normal": 25},
-            {"power_min": 55000000, "power_max": 59999999, "normal": 30},
-            {"power_min": 60000000, "power_max": 64999999, "normal": 35},
-            {"power_min": 65000000, "power_max": 69999999, "normal": 40},
-            {"power_min": 70000000, "power_max": 74999999, "normal": 45},
-            {"power_min": 75000000, "power_max": 79999999, "normal": 50},
-            {"power_min": 80000000, "power_max": 84999999, "normal": 55},
-            {"power_min": 85000000, "power_max": 89999999, "normal": 60},
-            {"power_min": 90000000, "power_max": 94999999, "normal": 65},
-            {"power_min": 95000000, "power_max": 99999999, "normal": 70},
-            {"power_min": 100000000, "power_max": Infinity, "normal": 75},
+            {"power_min": 1, "power_max": 9999999, "normal": 1, "same_kvk": 1},
+            {"power_min": 10000000, "power_max": 14999999, "normal": 2, "same_kvk": 1},
+            {"power_min": 15000000, "power_max": 19999999, "normal": 3, "same_kvk": 1},
+            {"power_min": 20000000, "power_max": 24999999, "normal": 4, "same_kvk": 1},
+            {"power_min": 25000000, "power_max": 29999999, "normal": 6, "same_kvk": 1},
+            {"power_min": 30000000, "power_max": 34999999, "normal": 9, "same_kvk": 2},
+            {"power_min": 35000000, "power_max": 39999999, "normal": 12, "same_kvk": 3},
+            {"power_min": 40000000, "power_max": 44999999, "normal": 15, "same_kvk": 5},
+            {"power_min": 45000000, "power_max": 49999999, "normal": 20, "same_kvk": 8},
+            {"power_min": 50000000, "power_max": 54999999, "normal": 25, "same_kvk": 12},
+            {"power_min": 55000000, "power_max": 59999999, "normal": 30, "same_kvk": 15},
+            {"power_min": 60000000, "power_max": 64999999, "normal": 35, "same_kvk": 20},
+            {"power_min": 65000000, "power_max": 69999999, "normal": 40, "same_kvk": 25},
+            {"power_min": 70000000, "power_max": 74999999, "normal": 45, "same_kvk": 32},
+            {"power_min": 75000000, "power_max": 79999999, "normal": 50, "same_kvk": 40},
+            {"power_min": 80000000, "power_max": 84999999, "normal": 55, "same_kvk": 47},
+            {"power_min": 85000000, "power_max": 89999999, "normal": 60, "same_kvk": 54},
+            {"power_min": 90000000, "power_max": 94999999, "normal": 65, "same_kvk": 61},
+            {"power_min": 95000000, "power_max": 99999999, "normal": 70, "same_kvk": 67},
+            {"power_min": 100000000, "power_max": Infinity, "normal": 75, "same_kvk": 73},
         ];
 
         const GH_SUM_VALUES = {
@@ -298,24 +320,24 @@
 
         const TROOP_DATA = {
             "infantry": {
-                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 800, "wood": 800, "gold": 400}},
-                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 300, "wood": 300, "gold": 20}},
-                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 500, "wood": 500, "gold": 380}}
+                "t5": {"base_time": 120, "power_per_troop": 10, "mge_points": 100, "prekvk_points": 20, "resources": {"food": 800, "wood": 800, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "mge_points": 40, "prekvk_points": 8, "resources": {"food": 300, "wood": 300, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "mge_points": 60, "prekvk_points": 12, "resources": {"food": 500, "wood": 500, "gold": 380}}
             },
             "archer": {
-                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"wood": 800, "stone": 600, "gold": 400}},
-                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"wood": 300, "stone": 225, "gold": 20}},
-                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"wood": 500, "stone": 375, "gold": 380}}
+                "t5": {"base_time": 120, "power_per_troop": 10, "mge_points": 100, "prekvk_points": 20, "resources": {"wood": 800, "stone": 600, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "mge_points": 40, "prekvk_points": 8, "resources": {"wood": 300, "stone": 225, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "mge_points": 60, "prekvk_points": 12, "resources": {"wood": 500, "stone": 375, "gold": 380}}
             },
             "cavalry": {
-                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 800, "stone": 600, "gold": 400}},
-                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 300, "stone": 225, "gold": 20}},
-                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 500, "stone": 375, "gold": 380}}
+                "t5": {"base_time": 120, "power_per_troop": 10, "mge_points": 100, "prekvk_points": 20, "resources": {"food": 800, "stone": 600, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "mge_points": 40, "prekvk_points": 8, "resources": {"food": 300, "stone": 225, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "mge_points": 60, "prekvk_points": 12, "resources": {"food": 500, "stone": 375, "gold": 380}}
             },
             "siege": {
-                "t5": {"base_time": 120, "power_per_troop": 10, "resources": {"food": 500, "wood": 500, "stone": 400, "gold": 400}},
-                "t4": {"base_time": 80, "power_per_troop": 4, "resources": {"food": 200, "wood": 200, "stone": 150, "gold": 20}},
-                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "resources": {"food": 300, "wood": 300, "stone": 250, "gold": 380}}
+                "t5": {"base_time": 120, "power_per_troop": 10, "mge_points": 100, "prekvk_points": 20, "resources": {"food": 500, "wood": 500, "stone": 400, "gold": 400}},
+                "t4": {"base_time": 80, "power_per_troop": 4, "mge_points": 40, "prekvk_points": 8, "resources": {"food": 200, "wood": 200, "stone": 150, "gold": 20}},
+                "t4_to_t5": {"base_time": 40, "power_per_troop": 6, "mge_points": 60, "prekvk_points": 12, "resources": {"food": 300, "wood": 300, "stone": 250, "gold": 380}}
             }
         };
 
@@ -324,20 +346,23 @@
 
         // Passport Calculator
         const passportPowerInput = document.getElementById('passport-power-input');
+        const sameKvkToggle = document.getElementById('same-kvk-toggle');
         const passportResult = document.getElementById('passport-result');
         
         function calculatePassports() {
             const power = parseInt(passportPowerInput.value) || 0;
+            const migrationType = sameKvkToggle.checked ? 'same_kvk' : 'normal';
             let needed = 0;
             for (const entry of MIGRATION_DATA) {
                 if (power >= entry.power_min && power <= entry.power_max) {
-                    needed = entry.normal;
+                    needed = entry[migrationType];
                     break;
                 }
             }
             passportResult.innerText = needed;
         }
         passportPowerInput.addEventListener('input', calculatePassports);
+        sameKvkToggle.addEventListener('change', calculatePassports);
 
         // Power to Troops Calculator
         const powerToTroopsInput = document.getElementById('power-to-troops-input');
@@ -440,6 +465,7 @@
         const speedupTroopTypeSelect = document.getElementById('speedup-troop-type');
         const speedupTroopTierSelect = document.getElementById('speedup-troop-tier');
         const troopsFromSpeedupsResult = document.getElementById('troops-from-speedups-result');
+        const speedupExtraResultsDiv = document.getElementById('speedup-extra-results');
 
         function calculateTroopsFromSpeedups() {
             const days = parseInt(speedupDaysInput.value) || 0;
@@ -454,6 +480,7 @@
             const totalSeconds = (days * 24 * 3600) + (hours * 3600) + (minutes * 60);
             if (totalSeconds === 0) {
                 troopsFromSpeedupsResult.innerText = '0';
+                speedupExtraResultsDiv.innerHTML = '';
                 return;
             }
 
@@ -463,6 +490,30 @@
             
             const numTroops = Math.floor((totalSeconds * effectiveSpeed) / baseTime);
             troopsFromSpeedupsResult.innerText = numTroops.toLocaleString();
+            
+            const totalPowerGain = numTroops * troopInfo.power_per_troop;
+            const totalMgePoints = numTroops * troopInfo.mge_points;
+            const totalPrekvkPoints = numTroops * troopInfo.prekvk_points;
+            
+            let resourcesHtml = '';
+            for(const [resource, amount] of Object.entries(troopInfo.resources)) {
+                resourcesHtml += `<div class="flex justify-between text-sm"><span class="capitalize text-gray-400">${resource}</span><span class="font-bold text-white">${(amount * numTroops).toLocaleString()}</span></div>`;
+            }
+
+            speedupExtraResultsDiv.innerHTML = `
+                 <div>
+                    <span class="text-gray-400 text-sm">Power Gain</span>
+                    <p class="text-xl font-bold text-brand-purple">${totalPowerGain.toLocaleString()}</p>
+                </div>
+                <div>
+                    <span class="text-gray-400 text-sm">MGE / Pre-KvK Points</span>
+                    <p class="text-xl font-bold text-brand-purple">${totalMgePoints.toLocaleString()} / ${totalPrekvkPoints.toLocaleString()}</p>
+                </div>
+                <div>
+                     <span class="text-gray-400 text-sm">Total Resources</span>
+                     <div class="mt-1 space-y-1">${resourcesHtml}</div>
+                </div>
+            `;
         }
         
         const speedupInputs = [speedupDaysInput, speedupHoursInput, speedupMinutesInput, speedupTrainingSpeedInput, speedupTroopTypeSelect, speedupTroopTierSelect];

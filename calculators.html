@@ -195,6 +195,52 @@
                             <!-- Results will be injected here by JavaScript -->
                          </div>
                     </div>
+
+                    <!-- Troops from Speedups Calculator -->
+                    <div id="troops-from-speedups" class="p-8 glassmorphism rounded-2xl lg:col-span-2">
+                        <h2 class="text-2xl font-bold text-white mb-6">🏃 Troops from Speedups Calculator</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label for="speedup-days" class="text-sm font-medium text-gray-300">Days</label>
+                                <input type="number" id="speedup-days" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="0">
+                            </div>
+                            <div>
+                                <label for="speedup-hours" class="text-sm font-medium text-gray-300">Hours</label>
+                                <input type="number" id="speedup-hours" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="0">
+                            </div>
+                            <div>
+                                <label for="speedup-minutes" class="text-sm font-medium text-gray-300">Minutes</label>
+                                <input type="number" id="speedup-minutes" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                            <div class="sm:col-span-1">
+                                <label for="speedup-training-speed" class="text-sm font-medium text-gray-300">Training Speed %</label>
+                                <input type="number" id="speedup-training-speed" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="e.g., 550">
+                            </div>
+                             <div>
+                                <label for="speedup-troop-type" class="text-sm font-medium text-gray-300">Troop Type</label>
+                                <select id="speedup-troop-type" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent">
+                                    <option value="infantry">Infantry</option>
+                                    <option value="archer">Archer</option>
+                                    <option value="cavalry">Cavalry</option>
+                                    <option value="siege">Siege</option>
+                                </select>
+                            </div>
+                             <div>
+                                <label for="speedup-troop-tier" class="text-sm font-medium text-gray-300">Tier</label>
+                                <select id="speedup-troop-tier" class="mt-2 w-full bg-gray-900/70 border-gray-700 rounded-lg py-3 px-4 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent">
+                                    <option value="t4">T4</option>
+                                    <option value="t5">T5</option>
+                                    <option value="t4_to_t5">T4 to T5</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div class="mt-6 border-t border-gray-700 pt-6">
+                             <span class="text-gray-400 text-sm">Troops You Can Train</span>
+                             <p id="troops-from-speedups-result" class="text-5xl font-extrabold text-brand-purple mt-1">0</p>
+                        </div>
+                    </div>
                    
                 </div>
             </div>
@@ -386,8 +432,42 @@
         numTroopsInput.addEventListener('input', calculateTraining);
         trainingSpeedInput.addEventListener('input', calculateTraining);
         
-        // Initial call to populate results on page load
-        calculateTraining();
+        // Troops from Speedups Calculator
+        const speedupDaysInput = document.getElementById('speedup-days');
+        const speedupHoursInput = document.getElementById('speedup-hours');
+        const speedupMinutesInput = document.getElementById('speedup-minutes');
+        const speedupTrainingSpeedInput = document.getElementById('speedup-training-speed');
+        const speedupTroopTypeSelect = document.getElementById('speedup-troop-type');
+        const speedupTroopTierSelect = document.getElementById('speedup-troop-tier');
+        const troopsFromSpeedupsResult = document.getElementById('troops-from-speedups-result');
+
+        function calculateTroopsFromSpeedups() {
+            const days = parseInt(speedupDaysInput.value) || 0;
+            const hours = parseInt(speedupHoursInput.value) || 0;
+            const minutes = parseInt(speedupMinutesInput.value) || 0;
+            const trainingSpeed = parseInt(speedupTrainingSpeedInput.value) || 0;
+            const troopType = speedupTroopTypeSelect.value;
+            const troopTier = speedupTroopTierSelect.value;
+            
+            if (!troopType || !troopTier) return;
+
+            const totalSeconds = (days * 24 * 3600) + (hours * 3600) + (minutes * 60);
+            if (totalSeconds === 0) {
+                troopsFromSpeedupsResult.innerText = '0';
+                return;
+            }
+
+            const troopInfo = TROOP_DATA[troopType][troopTier];
+            const baseTime = troopInfo.base_time;
+            const effectiveSpeed = 1 + (trainingSpeed / 100.0);
+            
+            const numTroops = Math.floor((totalSeconds * effectiveSpeed) / baseTime);
+            troopsFromSpeedupsResult.innerText = numTroops.toLocaleString();
+        }
+        
+        const speedupInputs = [speedupDaysInput, speedupHoursInput, speedupMinutesInput, speedupTrainingSpeedInput, speedupTroopTypeSelect, speedupTroopTierSelect];
+        speedupInputs.forEach(input => input.addEventListener('input', calculateTroopsFromSpeedups));
+
 
         // --- GENERAL UI SCRIPT ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -402,12 +482,15 @@
         const navLinks = document.querySelectorAll('#header a');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                // Check if the menu is open before trying to close it
                 if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
                     mobileMenu.classList.add('hidden');
                 }
             });
         });
+
+        // Initial calculations
+        calculateTraining();
+        calculateTroopsFromSpeedups();
     </script>
 
 </body>

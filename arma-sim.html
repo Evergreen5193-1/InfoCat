@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armament Chest Simulator - InfoCat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111118;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 15% 50%, rgba(157, 141, 241, 0.1), transparent),
+                radial-gradient(ellipse 80% 50% at 90% 40%, rgba(80, 100, 220, 0.1), transparent);
+            overflow: hidden;
+        }
+
+        /* --- Animations --- */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4)); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)); }
+        }
+
+        @keyframes light-flash {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: scale(2); }
+        }
+        
+        @keyframes result-fade-in {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Animation Classes */
+        .animate-shake { animation: shake 0.8s ease-in-out; }
+        .animate-glow { animation: glow 1.5s infinite ease-in-out; }
+        
+        /* UPDATED: Changed transform-origin from 'bottom' to 'top' */
+        #chest-lid { transform-origin: top; transition: transform 0.5s ease-in-out; }
+        .chest-open #chest-lid { transform: rotateX(-110deg); }
+
+        #light-flash {
+            opacity: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,215,0,0.5) 50%, rgba(157,141,241,0) 70%);
+        }
+        .flash-active #light-flash {
+            animation: light-flash 0.7s ease-out;
+        }
+
+        #result-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        #result-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stat-item {
+            opacity: 0;
+            animation: result-fade-in 0.5s ease-out forwards;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a22; }
+        ::-webkit-scrollbar-thumb { background: #4a4a5a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9D8DF1; }
+
+    </style>
+</head>
+<body class="text-gray-200 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div id="simulator-container" class="w-full max-w-2xl text-center">
+        
+        <!-- Chest Area -->
+        <div id="chest-area" class="relative mb-8 cursor-pointer" style="perspective: 1000px;">
+            <div id="chest-container" class="relative w-64 h-56 mx-auto">
+                <!-- Light Flash Effect -->
+                <div id="light-flash" class="absolute inset-0 w-full h-full rounded-full z-30"></div>
+
+                <!-- Chest Base -->
+                <div id="chest-base" class="absolute bottom-0 w-full h-[55%] z-0">
+                    <div class="relative w-full h-full">
+                        <div class="absolute bottom-0 w-full h-[85%] bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-b-lg border-b-4 border-x-4 border-yellow-900"></div>
+                        <div class="absolute top-0 w-full h-[25%] bg-gradient-to-b from-yellow-500 to-yellow-700 rounded-t-md border-t-2 border-x-2 border-yellow-900"></div>
+                        <div class="absolute -bottom-2.5 left-4 w-12 h-4 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-t-sm border-2 border-b-0 border-yellow-800"></div>
+                        <div class="absolute -bottom-2.5 right-4 w-12 h-4 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-t-sm border-2 border-b-0 border-yellow-800"></div>
+                        <div class="absolute top-[10%] -left-3 w-8 h-full bg-gradient-to-r from-yellow-500 to-yellow-700 rounded-lg border-2 border-yellow-900"></div>
+                        <div class="absolute top-[10%] -right-3 w-8 h-full bg-gradient-to-l from-yellow-500 to-yellow-700 rounded-lg border-2 border-yellow-900"></div>
+                    </div>
+                </div>
+
+                <!-- Chest Lid -->
+                <div id="chest-lid" class="absolute top-0 w-full h-[70%] z-10">
+                    <div class="relative w-full h-full">
+                        <!-- Arched Lid -->
+                        <div class="absolute w-full h-full bg-gradient-to-b from-yellow-500 to-yellow-600 rounded-t-[50%] border-t-4 border-x-4 border-yellow-800"></div>
+                        
+                        <!-- Recessed Band -->
+                        <div class="absolute top-[35%] left-0 w-full h-[45%] bg-gradient-to-b from-indigo-900 to-black shadow-inner flex items-center">
+                            <!-- Glowing blue line -->
+                            <div class="w-full h-1 bg-cyan-300" style="box-shadow: 0 0 5px 1px #0ff;"></div>
+                        </div>
+                        
+                        <!-- Corner Pieces -->
+                        <div class="absolute -top-2 -left-5 w-24 h-24 bg-gradient-to-br from-yellow-500 to-yellow-700 border-2 border-yellow-800 rounded-tl-2xl" style="clip-path: polygon(0 0, 100% 0, 100% 30%, 30% 100%, 0 100%);"></div>
+                        <div class="absolute -top-2 -right-5 w-24 h-24 bg-gradient-to-bl from-yellow-500 to-yellow-700 border-2 border-yellow-800 rounded-tr-2xl" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 100%, 0% 30%);"></div>
+                        <!-- Corner Spikes -->
+                        <div class="absolute top-2 left-1 w-4 h-6 bg-gradient-to-b from-yellow-300 to-yellow-500 transform -rotate-45" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+                        <div class="absolute top-6 left-5 w-4 h-6 bg-gradient-to-b from-yellow-300 to-yellow-500 transform -rotate-45" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+                        <div class="absolute top-2 right-1 w-4 h-6 bg-gradient-to-b from-yellow-300 to-yellow-500 transform rotate-45" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+                        <div class="absolute top-6 right-5 w-4 h-6 bg-gradient-to-b from-yellow-300 to-yellow-500 transform rotate-45" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+
+                        <!-- Central Gem Setting -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 z-20 flex items-center justify-center">
+                            <!-- Gold Bezel -->
+                            <div class="absolute w-full h-full bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full shadow-lg border-4 border-yellow-700"></div>
+                            <!-- Gem -->
+                            <div class="relative w-12 h-12">
+                                <div class="absolute w-full h-full bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full"></div>
+                                <!-- Gem Facet Highlight -->
+                                <div class="absolute top-1 left-1 w-1/2 h-1/2 bg-white/40 rounded-full blur-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p id="chest-prompt" class="mt-6 text-lg text-gray-400 transition-opacity duration-300">Click the chest to open it</p>
+        </div>
+
+        <!-- Open Button -->
+        <button id="open-button" class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold text-xl py-4 px-10 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
+            Open Legendary Chest
+        </button>
+
+        <!-- Result Card -->
+        <div id="result-card" class="hidden w-full max-w-md mx-auto bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 text-center shadow-2xl">
+            <h2 id="result-title" class="text-2xl font-bold mb-1"></h2>
+            <p id="result-type" class="text-gray-400 mb-6"></p>
+
+            <div id="result-stats" class="space-y-4 mb-6">
+                <!-- Stats will be populated here -->
+            </div>
+
+            <div id="result-inscription-container" class="hidden">
+                 <h3 class="text-lg font-semibold text-purple-300 mb-2">Inscription</h3>
+                 <p id="result-inscription" class="text-lg font-medium bg-gray-800/50 rounded-lg py-2 px-4"></p>
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-6">* 'Two Inscriptions' breakdown uses ESTIMATED probabilities.</p>
+            
+            <button id="reset-button" class="mt-6 w-full bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors duration-300">
+                Open Another
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA PORTED FROM PYTHON SCRIPT ---
+
+        const LEG_CHEST_PROBABILITIES = {
+            "Inscribed Legendary Armament": 12.472,
+            "Legendary Armament": 87.528,
+        };
+
+        const STAT_PROBABILITIES = {
+            "Scroll": {
+                1: {"Infantry Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Gold Gathering Speed": {"prob": 31.98, "range_leg": [5.0, 7.5]},},
+                2: {"Infantry Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Troop Load": {"prob": 31.98, "range_leg": [4.0, 7.0]},},
+                3: {"Infantry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"All Damage": {"prob": 3.20, "range_leg": [0.5, 2.0]},"Damage Reduction vs Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},"Damage to Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},}
+            },
+            "Instrument": {
+                1: {"Infantry Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Attack": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Gold Gathering Speed": {"prob": 31.98, "range_leg": [5.0, 7.5]},},
+                2: {"Infantry Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Defense": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Troop Load": {"prob": 31.98, "range_leg": [4.0, 7.0]},},
+                3: {"Infantry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"All Damage": {"prob": 3.20, "range_leg": [0.5, 2.0]},"Damage Reduction vs Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},"Damage to Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},}
+            },
+            "Flag": {
+                1: {"Infantry Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Archer Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Cavalry Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Siege Unit Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"March Speed (Infantry)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"March Speed (Cavalry)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"Gold Gathering Speed": {"prob": 13.71, "range_leg": [5.0, 7.5]},},
+                2: {"Infantry Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Archer Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Cavalry Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Siege Unit Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"March Speed (Archers)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"March Speed (Siege Units)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"Troop Load": {"prob": 13.71, "range_leg": [4.0, 7.0]},},
+                3: {"Infantry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"All Damage": {"prob": 3.20, "range_leg": [0.5, 2.0]},"Damage Reduction vs Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},"Damage to Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},}
+            },
+            "Emblem": {
+                1: {"Infantry Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Archer Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Cavalry Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Siege Unit Attack": {"prob": 14.72, "range_leg": [1.5, 3.5]},"March Speed (Infantry)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"March Speed (Cavalry)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"Gold Gathering Speed": {"prob": 13.71, "range_leg": [5.0, 7.5]},},
+                2: {"Infantry Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Archer Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Cavalry Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"Siege Unit Defense": {"prob": 14.72, "range_leg": [1.5, 3.5]},"March Speed (Archers)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"March Speed (Siege Units)": {"prob": 13.71, "range_leg": [1.5, 3.5]},"Troop Load": {"prob": 13.71, "range_leg": [4.0, 7.0]},},
+                3: {"Infantry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Archer Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Cavalry Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"Siege Unit Health": {"prob": 17.00, "range_leg": [1.5, 3.5]},"All Damage": {"prob": 3.20, "range_leg": [0.5, 2.0]},"Damage Reduction vs Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},"Damage to Barbarians": {"prob": 14.39, "range_leg": [4.0, 7.0]},}
+            }
+        };
+
+        const INSCRIPTION_PROBABILITIES = {
+            "Scroll_Instrument": {
+                "One Special Inscription": 0.66,
+                "One Rare Inscription": 6.55,
+                "One Common Inscription": 85.69,
+                "Two Inscriptions": {
+                    "total_prob": 7.10,
+                    "breakdown": {
+                        "Common + Common": 92.2,
+                        "Common + Rare": 7.1,
+                        "Common + Special": 0.7,
+                    }
+                }
+            },
+            "Flag_Emblem": {
+                "One Special Inscription": 0.67,
+                "One Rare Inscription": 6.81,
+                "One Common Inscription": 88.97,
+                "Two Inscriptions": {
+                    "total_prob": 3.55,
+                    "breakdown": {
+                        "Common + Common": 92.3,
+                        "Common + Rare": 7.0,
+                        "Common + Special": 0.7,
+                    }
+                }
+            }
+        };
+
+        const ARMAMENT_TYPES = ["Scroll", "Instrument", "Flag", "Emblem"];
+
+        // --- PLACEHOLDER GRAPHICS ---
+        // Replace these URLs with your actual graphics
+        const statGraphics = {
+            "Infantry Attack": "https://placehold.co/40x40/ef4444/ffffff?text=ATK",
+            "Archer Attack": "https://placehold.co/40x40/ef4444/ffffff?text=ATK",
+            "Cavalry Attack": "https://placehold.co/40x40/ef4444/ffffff?text=ATK",
+            "Siege Unit Attack": "https://placehold.co/40x40/ef4444/ffffff?text=ATK",
+            "Infantry Defense": "https://placehold.co/40x40/3b82f6/ffffff?text=DEF",
+            "Archer Defense": "https://placehold.co/40x40/3b82f6/ffffff?text=DEF",
+            "Cavalry Defense": "https://placehold.co/40x40/3b82f6/ffffff?text=DEF",
+            "Siege Unit Defense": "https://placehold.co/40x40/3b82f6/ffffff?text=DEF",
+            "Infantry Health": "https://placehold.co/40x40/22c55e/ffffff?text=HP",
+            "Archer Health": "https://placehold.co/40x40/22c55e/ffffff?text=HP",
+            "Cavalry Health": "https://placehold.co/40x40/22c55e/ffffff?text=HP",
+            "Siege Unit Health": "https://placehold.co/40x40/22c55e/ffffff?text=HP",
+            "All Damage": "https://placehold.co/40x40/f97316/ffffff?text=DMG",
+            "March Speed (Infantry)": "https://placehold.co/40x40/a855f7/ffffff?text=SPD",
+            "March Speed (Cavalry)": "https://placehold.co/40x40/a855f7/ffffff?text=SPD",
+            "March Speed (Archers)": "https://placehold.co/40x40/a855f7/ffffff?text=SPD",
+            "March Speed (Siege Units)": "https://placehold.co/40x40/a855f7/ffffff?text=SPD",
+            "Gold Gathering Speed": "https://placehold.co/40x40/eab308/ffffff?text=GOLD",
+            "Troop Load": "https://placehold.co/40x40/78716c/ffffff?text=LOAD",
+            "Damage Reduction vs Barbarians": "https://placehold.co/40x40/14b8a6/ffffff?text=PVE-D",
+            "Damage to Barbarians": "https://placehold.co/40x40/f43f5e/ffffff?text=PVE-A",
+            "Default": "https://placehold.co/40x40/9ca3af/ffffff?text=?",
+        };
+
+
+        // --- SIMULATION LOGIC ---
+
+        /**
+         * A helper function to perform weighted random selection, similar to Python's random.choices.
+         * @param {Object} data - An object where keys are items and values are weights.
+         * @returns {string} The chosen item.
+         */
+        function weightedRandomChoice(data) {
+            const items = Object.keys(data);
+            const weights = Object.values(data);
+            const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+            let random = Math.random() * totalWeight;
+
+            for (let i = 0; i < items.length; i++) {
+                if (random < weights[i]) {
+                    return items[i];
+                }
+                random -= weights[i];
+            }
+            return items[items.length - 1]; // Fallback
+        }
+
+        function getSlotStats(slotProbs) {
+            const chosenAttribute = weightedRandomChoice(
+                Object.entries(slotProbs).reduce((acc, [key, val]) => {
+                    acc[key] = val.prob;
+                    return acc;
+                }, {})
+            );
+
+            const [minVal, maxVal] = slotProbs[chosenAttribute].range_leg;
+            const rolledValue = Math.random() * (maxVal - minVal) + minVal;
+            return { attribute: chosenAttribute, value: parseFloat(rolledValue.toFixed(1)) };
+        }
+
+        function rollStatsForArmament(armamentType) {
+            const rolledStats = {};
+            const armamentProbs = STAT_PROBABILITIES[armamentType];
+            for (let slot = 1; slot <= 3; slot++) {
+                rolledStats[slot] = getSlotStats(armamentProbs[slot]);
+            }
+            return rolledStats;
+        }
+
+        function rollInscription(armamentType) {
+            const probKey = ["Scroll", "Instrument"].includes(armamentType) ? "Scroll_Instrument" : "Flag_Emblem";
+            const inscriptionGroupProbs = INSCRIPTION_PROBABILITIES[probKey];
+
+            const primaryProbs = Object.entries(inscriptionGroupProbs).reduce((acc, [key, val]) => {
+                acc[key] = typeof val === 'object' ? val.total_prob : val;
+                return acc;
+            }, {});
+
+            const chosenPrimaryType = weightedRandomChoice(primaryProbs);
+
+            if (chosenPrimaryType === "Two Inscriptions") {
+                const breakdownProbs = inscriptionGroupProbs["Two Inscriptions"].breakdown;
+                const chosenSubType = weightedRandomChoice(breakdownProbs);
+                return `Two Inscriptions (${chosenSubType})`;
+            }
+            return chosenPrimaryType;
+        }
+
+
+        // --- UI & ANIMATION LOGIC ---
+        const chestArea = document.getElementById('chest-area');
+        const chestContainer = document.getElementById('chest-container');
+        const chestLid = document.getElementById('chest-lid');
+        const chestPrompt = document.getElementById('chest-prompt');
+        const openButton = document.getElementById('open-button');
+        const resultCard = document.getElementById('result-card');
+        const resetButton = document.getElementById('reset-button');
+
+        let isOpening = false;
+
+        function runSimulation() {
+            if (isOpening) return;
+            isOpening = true;
+
+            // 1. Run simulation logic in the background
+            const baseOutcome = weightedRandomChoice(LEG_CHEST_PROBABILITIES);
+            const is_inscribed = (baseOutcome === "Inscribed Legendary Armament");
+            const chosen_armament_type = ARMAMENT_TYPES[Math.floor(Math.random() * ARMAMENT_TYPES.length)];
+            const rolled_stats = rollStatsForArmament(chosen_armament_type);
+            let inscription_result = null;
+            if (is_inscribed) {
+                inscription_result = rollInscription(chosen_armament_type);
+            }
+
+            // 2. Start animations
+            openButton.classList.add('hidden');
+            chestPrompt.style.opacity = '0';
+            chestContainer.classList.add('animate-shake');
+            chestContainer.classList.add('animate-glow');
+
+            // 3. Chain next animations
+            setTimeout(() => {
+                chestContainer.classList.remove('animate-shake');
+                chestContainer.parentElement.classList.add('flash-active');
+                chestLid.parentElement.parentElement.classList.add('chest-open');
+
+                setTimeout(() => {
+                    displayResults({ baseOutcome, chosen_armament_type, rolled_stats, inscription_result });
+                    chestArea.classList.add('hidden');
+                    resultCard.classList.remove('hidden');
+                    resultCard.classList.add('visible');
+                    chestContainer.classList.remove('animate-glow');
+                }, 500); // Wait for flash to be visible
+
+            }, 800); // After shake animation ends
+        }
+        
+        function displayResults(data) {
+            const { baseOutcome, chosen_armament_type, rolled_stats, inscription_result } = data;
+            
+            // Set title and color
+            const resultTitle = document.getElementById('result-title');
+            const resultType = document.getElementById('result-type');
+            resultTitle.textContent = `✨ ${baseOutcome} ✨`;
+            resultType.textContent = chosen_armament_type;
+            
+            if (baseOutcome === "Inscribed Legendary Armament") {
+                resultTitle.className = 'text-2xl font-bold mb-1 text-yellow-400';
+            } else {
+                resultTitle.textContent = `🔶 ${baseOutcome} 🔶`;
+                resultTitle.className = 'text-2xl font-bold mb-1 text-orange-400';
+            }
+
+            // Populate stats
+            const statsContainer = document.getElementById('result-stats');
+            statsContainer.innerHTML = '';
+            Object.values(rolled_stats).forEach((stat, index) => {
+                const statDiv = document.createElement('div');
+                statDiv.className = 'stat-item flex items-center justify-between bg-gray-800/50 p-3 rounded-lg';
+                statDiv.style.animationDelay = `${index * 150}ms`;
+                
+                const graphicSrc = statGraphics[stat.attribute] || statGraphics["Default"];
+                
+                statDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <img src="${graphicSrc}" alt="${stat.attribute}" class="w-10 h-10 mr-4 rounded-md" onerror="this.onerror=null;this.src='${statGraphics.Default}';">
+                        <span class="text-gray-300">${stat.attribute}</span>
+                    </div>
+                    <span class="font-bold text-lg text-white">+${stat.value}%</span>
+                `;
+                statsContainer.appendChild(statDiv);
+            });
+
+            // Populate inscription
+            const inscriptionContainer = document.getElementById('result-inscription-container');
+            if (inscription_result) {
+                document.getElementById('result-inscription').textContent = inscription_result;
+                inscriptionContainer.classList.remove('hidden');
+            } else {
+                inscriptionContainer.classList.add('hidden');
+            }
+        }
+
+        function resetSimulator() {
+            isOpening = false;
+            resultCard.classList.add('hidden');
+            resultCard.classList.remove('visible');
+            chestArea.classList.remove('hidden');
+            openButton.classList.remove('hidden');
+            chestPrompt.style.opacity = '1';
+            chestLid.parentElement.parentElement.classList.remove('chest-open');
+            chestContainer.parentElement.classList.remove('flash-active');
+        }
+
+        // --- Event Listeners ---
+        openButton.addEventListener('click', runSimulation);
+        chestArea.addEventListener('click', runSimulation);
+        resetButton.addEventListener('click', resetSimulator);
+
+    </script>
+</body>
+</html>

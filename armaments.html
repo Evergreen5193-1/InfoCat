@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoCat - Armament Calculator</title>
+    <link rel="icon" type="image/png" href="infocat-smaller.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111118;
+        }
+        .brand-purple { color: #9D8DF1; }
+        .bg-brand-purple { background-color: #9D8DF1; }
+        .border-brand-purple { border-color: #9D8DF1; }
+        .glassmorphism {
+            background: rgba(30, 30, 40, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(157, 141, 241, 0.15);
+        }
+        .hero-bg {
+            background-color: #111118;
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(157, 141, 241, 0.1), transparent);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a22; }
+        ::-webkit-scrollbar-thumb { background: #4a4a5a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9D8DF1; }
+        
+        .inscription-category h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .special-header { background: linear-gradient(135deg, #ff6b35, #f7931e); color: #fff; }
+        .rare-header { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff; }
+        .common-header { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #333; }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .checkbox-item:hover { background: rgba(255, 255, 255, 0.1); }
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #9D8DF1;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header -->
+    <header id="header" class="sticky top-0 left-0 right-0 z-40 transition-all duration-300 glassmorphism">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="Infocat.png" alt="InfoCat Logo" class="h-12 w-12 rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/9D8DF1/ffffff?text=iC';">
+                    <span class="hidden sm:block text-2xl font-bold text-white">InfoCat</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#trackers" class="hover:text-brand-purple transition-colors duration-300">Trackers</a>
+                    <a href="calculators.html" class="hover:text-brand-purple transition-colors duration-300">Calculators</a>
+                    <a href="about.html" class="hover:text-brand-purple transition-colors duration-300">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12 hero-bg py-10 rounded-2xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white">Armament Score Calculator</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-400">Calculate the optimal score for your armament setup with the complete inscription system.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Configuration -->
+            <div class="p-6 glassmorphism rounded-2xl">
+                <h3 class="text-2xl font-bold text-white mb-4">Configuration</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="pairing" class="text-sm font-medium text-gray-300">Commander Pairing</label>
+                        <select id="pairing" class="mt-1 w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent"></select>
+                    </div>
+                    <div>
+                        <label for="formation" class="text-sm font-medium text-gray-300">Formation</label>
+                        <select id="formation" class="mt-1 w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent"></select>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-300">Base Attributes</label>
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <input type="number" id="attack" placeholder="Attack %" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" value="0">
+                            <input type="number" id="defense" placeholder="Defense %" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" value="0">
+                            <input type="number" id="health" placeholder="Health %" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" value="0">
+                            <input type="number" id="allDamage" placeholder="All Damage %" class="w-full bg-gray-900/70 border-gray-700 rounded-lg py-2 px-3 text-white focus:ring-2 focus:ring-brand-purple focus:border-transparent" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Column: Inscriptions -->
+            <div class="p-6 glassmorphism rounded-2xl">
+                <h3 class="text-2xl font-bold text-white mb-4">Inscriptions</h3>
+                <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                    <div class="inscription-category">
+                        <h4 class="special-header">Special (Legendary) - Max 4</h4>
+                        <div class="checkbox-grid" id="specialInscriptions"></div>
+                    </div>
+                    <div class="inscription-category">
+                        <h4 class="rare-header">Rare (Blue) - Max 4</h4>
+                        <div class="checkbox-grid" id="rareInscriptions"></div>
+                    </div>
+                    <div class="inscription-category">
+                        <h4 class="common-header">Common (Green/White)</h4>
+                        <div class="checkbox-grid" id="commonInscriptions"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="p-6 glassmorphism rounded-2xl">
+                 <h3 class="text-2xl font-bold text-white mb-4">Results</h3>
+                 <div class="text-center mb-4">
+                    <p class="text-gray-400">Total Armament Score</p>
+                    <div class="score-display text-5xl text-brand-purple" id="totalScore">0.00</div>
+                 </div>
+                 <div id="scoreBreakdown" class="space-y-2">
+                     <!-- Breakdown populated by JS -->
+                 </div>
+                 <div class="flex space-x-2 mt-6">
+                    <button id="recalculate-button" class="w-full bg-brand-purple hover:bg-opacity-90 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Recalculate</button>
+                    <button id="clear-button" class="w-full bg-red-600/80 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">Clear</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const pairingScales = {
+            "HUO / ARTHUR": [1, 1.36, 1.51, 3.09, 0.62, 0.31, 2.47, 0, 0],
+            "HUO / JOAN": [1, 1.32, 1.53, 3, 0.6, 0.3, 2.4, 0, 0],
+            "HUO / BELISARIUS": [1, 1.24, 1.64, 2.8, 0.56, 0.28, 2.24, 0, 0],
+            "NEVSKY / JOAN": [1, 1.34, 1.3, 2.62, 0.66, 0.33, 1.96, 0, 0],
+            "JOAN / BELISARIUS": [1, 1.36, 1.53, 2.7, 0.8, 0.4, 1.9, 0, 0],
+            "ARTHUR / WILLIAM": [1, 1.53, 1.51, 2.83, 0.8, 0.4, 0.6, 0, 1.12],
+            "ARTHUR / PHILIP": [1, 1.56, 1.65, 2.31, 0.85, 0.42, 0.31, 0, 1.15],
+            "BAI QI / LIU CHE": [1, 1.23, 1.76, 2.96, 2.96, 0.37, 0, 2.22, 0.1],
+            "BAI QI / WALLACE": [1, 1.18, 1.74, 2.87, 2.87, 0.41, 0, 2.15, 0],
+            "BAI QI / CJ": [1, 1.36, 1.85, 3, 3, 0.47, 0, 2.06, 0],
+            "LIU CHE / ALEX": [1, 1.1, 1.83, 2.85, 1.47, 0.3, 0.8, 1.07, 0.1],
+            "LIU CHE / PHILIP": [1, 0.97, 1.66, 2.08, 1.32, 0.3, 0.32, 0.92, 0.1],
+            "RAGNAR / SCIPIO": [1, 1.11, 1.62, 2.87, 0.72, 0.36, 2.15, 0, 0],
+            "ZHUGE / HERMANN": [1, 1.25, 1.41, 2.77, 0.73, 0.36, 2.04, 0, 0],
+            "ZHUGE / PHILIP": [1, 1.25, 1.14, 2.04, 0.76, 0.38, 1.29, 0, 0],
+            "ASHUR / YSG": [1, 1.19, 1.71, 2.96, 0.71, 0.36, 2.25, 0, 0],
+            "ASHUR / HERMANN": [1, 1.19, 1.72, 2.94, 0.71, 0.36, 2.25, 0, 0],
+            "SHAJAR / YSG": [1, 1.21, 1.37, 2.79, 0.56, 0.28, 2.23, 0, 0]
+        };
+
+        const formationBonuses = {
+            "ARCH": [0, 0, 0, 0, 5, 0, 0, 0, 0],
+            "WEDGE": [0, 0, 0, 0, 0, 0, 5, 0, 0],
+            "HOLLOW SQUARE": [0, 0, 0, 2, 0, 0, 0, 0, 0],
+            "DELTA": [0, 0, 0, 0, 0, 0, 0, 0, 10],
+            "PINCER": [0, 0, 0, 0, 0, 0, 0, 10, 0]
+        };
+
+        const specialInscriptions = {
+            "Destructive": [0, 0, 0, 0, 3.5, 0, -3.5, -7, -3.5], "Straight to the Point": [0, 0, 0, 0, 5.78, 0, -2.1, 0, 0], "Invincible": [0, 0, 0, 0, 4.5, 0, 5, 0, 0], "Fearless": [0, 0, 0, 0, 8, 0, 0, 0, 0], "Hunter": [0, 0, 0, 0, 0, 0, 7, 0, 0], "Unstoppable": [0, 0, 0, 0, 0, 0, 6, 0, 0], "Balanced": [0, 0, 0, 0, 3.5, 0, 4, 0, 0], "Intrepid": [0, 0, 0, 0, 0, 0, 10, 0, 0], "Cocoon": [0, 0, 0, 0, 0, 0, 5, 0, 0], "Inviolable": [0, 0, 0, 3.75, 0, 0, 0, 0, 0], "Crowned": [0, 0, 0, 2.5, 0, 0, 0, 0, 0], "Rounded": [0, 0, 0, 5, 0, 0, 0, 0, 0], "Trasher": [0, 0, 0, 0, 0, 0, 0, 0, 7.5], "Butterfly": [0, 0, 0, 0, 0, 0, 0, 0, 3.5], "Steelskin": [0, 0, 0, 5, 0, 0, 0, 0, 0], "Flurry": [0, 0, 0, 0, 0, 0, 0, 0, 8], "Toppler": [0, 0, 0, 0, 0, 0, 0, 10, 0], "Demolisher": [0, 3.75, 0, 0, 0, 0, 0, 5, 0], "Airtight": [0, 0, 0, 3.75, 0, 0, 0, 0, 0], "Thundering": [0, 0, 0, 0, 0, 0, 0, 10, 0]
+        };
+
+        const rareInscriptions = {
+            "Battle Ready": [0, 0, 0, 0, 5, 0, -3.5, -6, -3.5], "Even Keeled": [0, 0, 0, 1.07, 1.5, 0, 2.1, 0, 0], "Unswerving": [0, 0, 0, 0, 0, 0, 4, 0, 0], "Forceful": [0, 0, 0, 0, 3, 0, 0, 0, 0], "Crazed": [0, 0, 0, 0.5, 0, 0, 0, 0, 0], "Boiling Blood": [0, 0, 0, 0, 0, 0, 3.15, 0, 0], "Defiant": [0, 0, 0, 0, 3, 0, 0, 0, 0], "Focus Fire": [0, 0, 0, 0, 0, 0, 4, 0, 0], "Self Defense": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Aegis": [0, 0, 0, 1.875, 0, 0, 0, 0, 0], "Reinforced": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Tenacious": [0, 0, 0, 2, 0, 0, 0, 0, 0], "Pummeler": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Causative": [0, 0, 0, 0, 0, 0, 0, 0, 1.5], "Determined": [0, 0, 0, 1.5, 0, 0, 0, 0, 0], "Relentless": [0, 0, 0, 0, 0, 0, 0, 0, 3.5], "Imploder": [0, 5, 0, 0, 0, 0, 0, 0, 0], "Raider": [0, 0, 0, 0, 0, 0, 0, 2, 0], "Hardheaded": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Rattling": [0, 0, 0, 0, 0, 0, 0, 4, 0]
+        };
+
+        const commonInscriptions = {
+            "Warcry/Brutal/Spiked/Infamy": [3.5, 0, 0, 0, 0, 0, 0, 0, 0], "Well Clad/Armored/Metallics/Shielded": [0, 3.5, 0, 0, 0, 0, 0, 0, 0], "Robust/Fit/Vitality/Hardy": [0, 0, 3.5, 0, 0, 0, 0, 0, 0], "Onslaught/Warhunger/Striker/Militant": [0, 0, 0, 0, 1.5, 0, 0, 0, 0], "Retaliatory/Alert/Rebuff/Resistant": [0, 0, 0, 0, 0, 2.5, 0, 0, 0], "Enraged/Devious/Brawler/Daring": [0, 0, 0, 0, 0, 1, 2.5, 0, 0], "Valiant/Fearsome/Warflames/Elite": [0, 0, 0, 1, 0, 0, 0, 0, 0], "Evasive (on instrument)": [0, 0, 0, 0, 0, 2.5, 0, 0, 0], "Evasive (on Emblem)": [0, 0, 0, 1, 0, 0, 0, 0, 0], "Iron Wall": [0, 0, 0, 0, 1.5, 0, 0, 0, 0], "Bellicose": [0, 0, 0, 1.07, 0, 0, 0, 0, 0], "Pulverize": [0, 0, 0, 0, 1.42, 0, 0, 0, 0], "Breaker": [0, 3.2, 0, 0, 0, 0, 0, 0, 0], "Furious": [0, 0, 0, 0, 1.5, 0, 4, 0, 0], "Ward": [0, 0, 0, 1.87, 0, 0, 0, 0, 0], "Calm": [2.3, 0, 0, 0, 0, 0, 0, 0, 0], "Requital": [0, 0, 0, 0, 1.78, 0, 0, 0, 0], "Respite": [0, 0, 0, 1.42, 0, 0, 0, 0, 0], "Guarded": [0, 0, 0, 0, 0, 0, 1.42, 0, 0], "Embattled": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Vengeful": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Uplifting": [0, 0, 0, 0, 1, 0, 0, 0, 0], "Spirited": [0, 0, 0, 0, 1, 0, 0, 0, 0], "Eclipsed": [0, 0, 0, 0, 0, 0, 2.5, 0, 0], "Brave": [0, 0, 0, 0, 0, 5, 0, 0, 0], "Strategic": [0, 0, 0, 2, 0, 0, 0, 0, 0], "Desperado": [0, 0, 0, 2, 0, 0, 0, 0, 0], "Cohesive": [0, 0, 0, 0.5, 0, 0, 0, 0, 0], "Pursuer": [0, 0, 0, 2, 0, 0, 0, 0, 0], "Assertive": [0, 0, 0, 2, 0, 0, 0, 0, 0], "Siegework": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Sentries": [0, 0, 0, 0, 0, 0, 0, 0, 0], "Ballistics": [0, 0, 0, 0, 0, 1.5, 0, 0, 0], "Smite": [0, 0, 0, 0, 2, 0, 0, 0, 0], "Enduring": [0, 0, 0, 0, 0, 3, 0, 0, 0], "Artisan": [0, 0, 0, 0, 0, 1, 3, 0, 0], "Rapacious": [0, 0, 0, 1.5, 0, 0, 0, 0, 0], "Guardians": [0, 0, 0, 0, 0, 2, 0, 0, 0], "Counterer": [0, 0, 0, 0, 0, 3, 0, 0, 0], "Deflector": [0, 0, 0, 0, 0, 0, 3, 0, 0], "Lineshot": [0, 0, 0, 0, 1, 0, 0, 0, 0], "Watchmen": [0, 0, 0, 1.5, 0, 0, 0, 0, 0]
+        };
+
+        function populateDropdown(selectId, options) {
+            const select = document.getElementById(selectId);
+            Object.keys(options).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                select.appendChild(option);
+            });
+        }
+        
+        function populateCheckboxes(containerId, inscriptions, category) {
+             const container = document.getElementById(containerId);
+            Object.keys(inscriptions).forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="${category}_${name.replace(/\s+/g, '_')}" 
+                           value="${name}" data-category="${category}">
+                    <label for="${category}_${name.replace(/\s+/g, '_')}">${name}</label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function enforceSlotLimits(category, maxSlots) {
+            const checkboxes = document.querySelectorAll(`input[data-category="${category}"]:checked`);
+            if (checkboxes.length > maxSlots) {
+                alert(`Maximum ${maxSlots} ${category} inscriptions allowed!`);
+                event.target.checked = false;
+            }
+        }
+
+        function calculateScore() {
+            const pairing = document.getElementById('pairing').value;
+            const formation = document.getElementById('formation').value;
+            
+            const attack = parseFloat(document.getElementById('attack').value) || 0;
+            const defense = parseFloat(document.getElementById('defense').value) || 0;
+            const health = parseFloat(document.getElementById('health').value) || 0;
+            const allDamage = parseFloat(document.getElementById('allDamage').value) || 0;
+
+            const selectedSpecial = Array.from(document.querySelectorAll('input[data-category="special"]:checked')).map(cb => cb.value);
+            const selectedRare = Array.from(document.querySelectorAll('input[data-category="rare"]:checked')).map(cb => cb.value);
+            const selectedCommon = Array.from(document.querySelectorAll('input[data-category="common"]:checked')).map(cb => cb.value);
+
+            const scales = pairingScales[pairing] || Object.values(pairingScales)[0];
+            
+            let totals = [attack, defense, health, allDamage, 0, 0, 0, 0, 0];
+
+            const formBonus = formationBonuses[formation] || Array(9).fill(0);
+            totals = totals.map((val, i) => val + formBonus[i]);
+
+            [...selectedSpecial, ...selectedRare, ...selectedCommon].forEach(inscription => {
+                const bonus = specialInscriptions[inscription] || rareInscriptions[inscription] || commonInscriptions[inscription] || Array(9).fill(0);
+                totals = totals.map((val, i) => val + bonus[i]);
+            });
+
+            const componentScores = totals.map((total, i) => total * scales[i]);
+            const finalScore = componentScores.reduce((sum, score) => sum + score, 0);
+
+            document.getElementById('totalScore').textContent = finalScore.toFixed(2);
+
+            const breakdown = document.getElementById('scoreBreakdown');
+            breakdown.innerHTML = `
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Attack:</span> <span class="font-semibold">${componentScores[0].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Defense:</span> <span class="font-semibold">${componentScores[1].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Health:</span> <span class="font-semibold">${componentScores[2].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">All DMG:</span> <span class="font-semibold">${componentScores[3].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">NA:</span> <span class="font-semibold">${componentScores[4].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">CA:</span> <span class="font-semibold">${componentScores[5].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Skill DMG:</span> <span class="font-semibold">${componentScores[6].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Smite DMG:</span> <span class="font-semibold">${componentScores[7].toFixed(2)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400">Combo DMG:</span> <span class="font-semibold">${componentScores[8].toFixed(2)}</span></div>
+            `;
+        }
+        
+        function clearAll() {
+            if (confirm('Clear all selections?')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.getElementById('attack').value = 0;
+                document.getElementById('defense').value = 0;
+                document.getElementById('health').value = 0;
+                document.getElementById('allDamage').value = 0;
+                calculateScore();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDropdown('pairing', pairingScales);
+            populateDropdown('formation', formationBonuses);
+            populateCheckboxes('specialInscriptions', specialInscriptions, 'special');
+            populateCheckboxes('rareInscriptions', rareInscriptions, 'rare');
+            populateCheckboxes('commonInscriptions', commonInscriptions, 'common');
+            
+            document.querySelectorAll('select, input[type="number"]').forEach(input => {
+                input.addEventListener('input', calculateScore);
+            });
+
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') {
+                    if(e.target.dataset.category === 'special') enforceSlotLimits('special', 4);
+                    if(e.target.dataset.category === 'rare') enforceSlotLimits('rare', 4);
+                    calculateScore();
+                }
+            });
+            
+            document.getElementById('recalculate-button').addEventListener('click', calculateScore);
+            document.getElementById('clear-button').addEventListener('click', clearAll);
+
+            calculateScore();
+        });
+    </script>
+</body>
+</html>

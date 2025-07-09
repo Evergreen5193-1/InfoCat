@@ -338,7 +338,7 @@
             const bonusDisplay = document.getElementById('formationBonus');
             const bonus = formationBonuses[formation];
             let bonusText = '';
-            if (bonus[4] > 0) bonusText += `NA +${bonus[4]}% `;
+            if (bonus[4] > 0) bonusText += `Normal Attack +${bonus[4]}% `;
             if (bonus[6] > 0) bonusText += `Skill DMG +${bonus[6]}% `;
             if (bonus[3] > 0) bonusText += `All DMG +${bonus[3]}% `;
             if (bonus[8] > 0) bonusText += `Combo DMG +${bonus[8]}% `;
@@ -379,8 +379,8 @@
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">Def: <span class="font-bold float-right">${scores[1].toFixed(2)}</span></div>
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">HP: <span class="font-bold float-right">${scores[2].toFixed(2)}</span></div>
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">AllDmg: <span class="font-bold float-right">${scores[3].toFixed(2)}</span></div>
-                <div class="breakdown-item bg-gray-800/50 p-2 rounded">NA: <span class="font-bold float-right">${scores[4].toFixed(2)}</span></div>
-                <div class="breakdown-item bg-gray-800/50 p-2 rounded">CA: <span class="font-bold float-right">${scores[5].toFixed(2)}</span></div>
+                <div class="breakdown-item bg-gray-800/50 p-2 rounded">Normal Attack: <span class="font-bold float-right">${scores[4].toFixed(2)}</span></div>
+                <div class="breakdown-item bg-gray-800/50 p-2 rounded">Counter Attack: <span class="font-bold float-right">${scores[5].toFixed(2)}</span></div>
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">Skill: <span class="font-bold float-right">${scores[6].toFixed(2)}</span></div>
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">Smite: <span class="font-bold float-right">${scores[7].toFixed(2)}</span></div>
                 <div class="breakdown-item bg-gray-800/50 p-2 rounded">Combo: <span class="font-bold float-right">${scores[8].toFixed(2)}</span></div>

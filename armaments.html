@@ -236,31 +236,11 @@
                     </div>
                 </div>
 
-                <!-- Bottom Row: History & API -->
+                <!-- Bottom Row: History -->
                 <div class="p-6 glassmorphism rounded-xl lg:col-span-3">
                     <h3 class="text-2xl font-bold text-white mb-6">📚 Calculation History</h3>
                     <div id="historyContainer" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                         <!-- History items populated by JS -->
-                    </div>
-                </div>
-                 <div class="p-6 glassmorphism rounded-xl lg:col-span-3">
-                    <h3 class="text-2xl font-bold text-white mb-6">🔧 Integration Options</h3>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <p class="font-semibold text-gray-300 mb-2">Discord Bot Integration:</p>
-                            <div class="api-code bg-gray-900 text-gray-300 p-4 rounded-lg text-xs break-words">!armaments --pairing="Ashur/Hermann" --formation="wedge" --attack=13 --defense=4 --health=9 --alldmg=2 --special="Destructive,Hunter" --rare="Focus Fire,Boiling Blood" --common="Warcry,Brave"</div>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-300 mb-2">Website Integration (JavaScript API):</p>
-                            <div class="api-code bg-gray-900 text-gray-300 p-4 rounded-lg text-xs">
-<pre><code>const result = ArmamentsCalculator.calculate({
-    pairing: "ASHUR / HERMANN",
-    formation: "WEDGE",
-    attributes: { attack: 13, ... },
-    inscriptions: { special: ["Destructive"], ... }
-});</code></pre>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -497,9 +477,6 @@
             }
         }
         
-        // API for external integration (remains for compatibility)
-        window.ArmamentsCalculator = { calculate: function(config) { return calculateScore(); } };
-
         // --- SITE UI SCRIPT (from InfoCat theme) ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');

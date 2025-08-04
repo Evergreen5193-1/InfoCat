@@ -9,42 +9,6 @@ const dashboardContent = document.getElementById('dashboard-content');
 const logoutButton = document.getElementById('logout-button');
 
 /**
- * Main function to handle authentication and rendering.
- */
-const handleAuthentication = async () => {
-    // First, check if there's an active session when the page loads
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (session) {
-        // If a session exists, the user is already logged in.
-        await renderDashboard(session.user);
-    }
-
-    // Now, set up a listener for any future auth changes.
-    // This is crucial for catching the user after they are redirected back from Discord.
-    supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-            // This event fires after a successful login.
-            await renderDashboard(session.user);
-        } else if (event === 'SIGNED_OUT') {
-            // This event fires after a successful logout.
-            window.location.replace('/index.html');
-        }
-    });
-
-    // Final check: If after a moment there's still no session, redirect to login.
-    // This handles the case where a non-logged-in user lands on the dashboard directly.
-    setTimeout(async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session && !dashboardContent.classList.contains('hidden')) {
-            // The dashboard is not visible, and there's no session, so redirect.
-             window.location.replace('/index.html');
-        }
-    }, 2500); // Check after 2.5 seconds
-};
-
-
-/**
  * Fetches data and renders the main dashboard content.
  * @param {object} user - The authenticated user object from Supabase.
  */
@@ -95,5 +59,39 @@ logoutButton.addEventListener('click', async () => {
     // The onAuthStateChange listener will handle the redirect.
 });
 
-// Start the authentication process when the page loads.
-document.addEventListener('DOMContentLoaded', handleAuthentication);
+// This is the main entry point for the dashboard
+document.addEventListener('DOMContentLoaded', () => {
+    // onAuthStateChange is the key. It fires when the user logs in, logs out,
+    // or when the page loads and a session is detected from the URL.
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        // The URL hash is only present after the redirect from Discord.
+        // We only want to act on the SIGNED_IN event to avoid duplicate renders.
+        if (event === "SIGNED_IN" && session) {
+            // Clean the ugly tokens from the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            await renderDashboard(session.user);
+        } else if (event === "SIGNED_OUT") {
+            // If user signs out, redirect to login
+            window.location.replace('/index.html');
+        }
+    });
+
+    // Also check for an existing session on initial page load, in case the
+    // user was already logged in from a previous visit.
+    const loadInitialSession = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            await renderDashboard(session.user);
+        } else {
+            // If no session is found after a short delay, redirect to login.
+            // This handles users trying to access the dashboard directly without logging in.
+            setTimeout(() => {
+                if (dashboardContent.classList.contains('hidden')) {
+                    window.location.replace('/index.html');
+                }
+            }, 1500);
+        }
+    };
+    
+    loadInitialSession();
+});

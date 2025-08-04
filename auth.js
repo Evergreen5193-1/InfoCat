@@ -11,8 +11,16 @@ const errorMessage = document.getElementById('error-message');
 
 loginButton.addEventListener('click', async () => {
     loginButton.textContent = 'Redirecting...';
+
+    // This tells Supabase where to send the user back after they log in.
+    // It constructs the full URL to your dashboard page.
+    const redirectTo = `${window.location.origin}/dashboard.html`;
+
     const { error } = await supabase.auth.signInWithOAuth({
         provider: 'discord',
+        options: {
+            redirectTo: redirectTo,
+        }
     });
 
     if (error) {

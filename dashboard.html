@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoCat - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Your custom styles -->
+</head>
+<body class="text-gray-200 bg-[#111118]">
+    <div id="loading-state" class="min-h-screen flex items-center justify-center">
+        <p class="text-xl animate-pulse">Loading session...</p>
+    </div>
+
+    <div id="dashboard-content" class="hidden container mx-auto p-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-4">
+                <img id="user-avatar" src="" alt="User Avatar" class="h-20 w-20 rounded-full border-2 border-purple-400">
+                <div>
+                    <h1 id="welcome-message" class="text-4xl font-bold"></h1>
+                </div>
+            </div>
+            <button id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</button>
+        </div>
+        <!-- Accounts Section -->
+        <h2 class="text-2xl font-semibold mb-4">Your Accounts</h2>
+        <div id="accounts-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Account cards injected here -->
+        </div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>

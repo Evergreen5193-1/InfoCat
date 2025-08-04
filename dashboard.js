@@ -1,83 +1,161 @@
 // dashboard.js
-const SUPABASE_URL = 'https://pozkpfnyscbnmafkgqyz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvemtwZm55c2Nibm1hZmtncXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzUyNzgsImV4cCI6MjA2ODU1MTI3OH0.EsEIdX25oH-gTb14XLTm3eYfsb8xEueLDn6ACPPMkeg';
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_PUBLIC_KEY';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const loadingState = document.getElementById('loading-state');
 const dashboardContent = document.getElementById('dashboard-content');
 const logoutButton = document.getElementById('logout-button');
+const accountSelector = document.getElementById('account-selector');
+
+let speedupChart = null; // To hold the chart instance
 
 /**
  * Fetches data and renders the main dashboard content.
  * @param {object} user - The authenticated user object from Supabase.
  */
 async function renderDashboard(user) {
-    // Display user info
     document.getElementById('welcome-message').textContent = `Welcome, ${user.user_metadata.full_name}!`;
     document.getElementById('user-avatar').src = user.user_metadata.avatar_url;
 
-    // Fetch the user's game accounts from the 'accounts' table
-    // RLS ensures we only get the accounts for the logged-in user.
-    const { data: accounts, error } = await supabase
-        .from('accounts')
-        .select('*');
+    const { data: accounts, error } = await supabase.from('accounts').select('*');
 
     if (error) {
         console.error('Error fetching accounts:', error);
-        document.getElementById('accounts-container').innerHTML = '<p class="text-red-400">Could not load account data.</p>';
+        document.getElementById('accounts-section').innerHTML = '<p class="text-red-400">Could not load account data.</p>';
     } else {
-        // Render the account cards
-        const accountsContainer = document.getElementById('accounts-container');
-        accountsContainer.innerHTML = ''; // Clear loading/old content
-
+        accountSelector.innerHTML = ''; // Clear previous options
         if (accounts && accounts.length > 0) {
             accounts.forEach(account => {
-                const card = document.createElement('div');
-                card.className = 'bg-gray-800 p-6 rounded-lg';
-                card.innerHTML = `
-                    <h3 class="text-xl font-bold">${account.alias || `Account ${account.governor_id}`}</h3>
-                    <p class="text-purple-400 capitalize">${account.account_type} Account</p>
-                    <p class="text-gray-400">Governor ID: ${account.governor_id}</p>
-                `;
-                accountsContainer.appendChild(card);
+                const option = document.createElement('option');
+                option.value = account.id; // Use the internal ID as the value
+                option.textContent = `${account.alias || `Gov ${account.governor_id}`} (${account.account_type})`;
+                accountSelector.appendChild(option);
             });
+            // Automatically load data for the first account
+            fetchAndDisplaySpeedups(accounts[0].id);
         } else {
-            accountsContainer.innerHTML = '<p>You have no accounts linked yet. Use the Discord bot to bind one!</p>';
+            const option = document.createElement('option');
+            option.textContent = 'No accounts found. Bind one with the bot!';
+            option.disabled = true;
+            accountSelector.appendChild(option);
         }
     }
 
-    // Show the dashboard and hide loading
     loadingState.classList.add('hidden');
     dashboardContent.classList.remove('hidden');
 }
 
-// Handle logout
+/**
+ * Fetches and displays speedup data for a selected account.
+ * @param {number} accountId - The internal ID of the account.
+ */
+async function fetchAndDisplaySpeedups(accountId) {
+    const speedupSection = document.getElementById('speedup-details');
+    speedupSection.classList.remove('hidden');
+
+    const { data: speedups, error } = await supabase
+        .from('gov_speedups')
+        .select('*')
+        .eq('account_id', accountId)
+        .order('recorded_at', { ascending: true });
+
+    if (error) {
+        console.error('Error fetching speedups:', error);
+        return;
+    }
+
+    renderSummaryCards(speedups);
+    renderChart(speedups);
+}
+
+/**
+ * Renders the summary cards with the latest speedup data.
+ * @param {Array} speedupData - The array of speedup records.
+ */
+function renderSummaryCards(speedupData) {
+    const container = document.getElementById('summary-cards-container');
+    container.innerHTML = ''; // Clear old cards
+
+    if (speedupData.length === 0) {
+        container.innerHTML = '<p class="col-span-full">No speedup data found for this account.</p>';
+        return;
+    }
+
+    const latest = speedupData[speedupData.length - 1];
+    const previous = speedupData.length > 1 ? speedupData[speedupData.length - 2] : null;
+
+    const cards = [
+        { title: 'Universal', value: latest.universal_days, gain: previous ? latest.universal_days - previous.universal_days : 0 },
+        { title: 'Training', value: latest.training_days, gain: previous ? latest.training_days - previous.training_days : 0 },
+        { title: 'Healing', value: latest.healing_days, gain: previous ? latest.healing_days - previous.healing_days : 0 },
+    ];
+
+    cards.forEach(card => {
+        const gainSign = card.gain >= 0 ? '+' : '';
+        const gainColor = card.gain >= 0 ? 'text-green-400' : 'text-red-400';
+        const cardEl = document.createElement('div');
+        cardEl.className = 'bg-gray-800 p-6 rounded-lg';
+        cardEl.innerHTML = `
+            <h4 class="text-gray-400 text-lg">${card.title}</h4>
+            <p class="text-3xl font-bold text-white">${card.value.toLocaleString()}d</p>
+            <p class="text-md ${gainColor}">${gainSign}${card.gain.toLocaleString()}d since last scan</p>
+        `;
+        container.appendChild(cardEl);
+    });
+}
+
+/**
+ * Renders the speedup history chart.
+ * @param {Array} data - The array of speedup records.
+ */
+function renderChart(data) {
+    const ctx = document.getElementById('speedup-chart').getContext('2d');
+    
+    if (speedupChart) {
+        speedupChart.destroy(); // Destroy the old chart instance before creating a new one
+    }
+
+    speedupChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(d => new Date(d.recorded_at)),
+            datasets: [
+                { label: 'Universal', data: data.map(d => d.universal_days), borderColor: '#BE40E5', tension: 0.1 },
+                { label: 'Training', data: data.map(d => d.training_days), borderColor: '#34D399', tension: 0.1 },
+                { label: 'Healing', data: data.map(d => d.healing_days), borderColor: '#F87171', tension: 0.1 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { type: 'time', time: { unit: 'day' }, ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(156, 163, 175, 0.1)' } },
+                y: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(156, 163, 175, 0.1)' } }
+            },
+            plugins: { legend: { labels: { color: '#D1D5DB' } } }
+        }
+    });
+}
+
+// --- Event Listeners ---
 logoutButton.addEventListener('click', async () => {
-    logoutButton.textContent = 'Logging out...';
     await supabase.auth.signOut();
-    // The onAuthStateChange listener will handle the redirect below.
 });
 
-// This is the main entry point for the dashboard.
-// It should be the ONLY auth-related code that runs on page load.
+accountSelector.addEventListener('change', (e) => {
+    fetchAndDisplaySpeedups(e.target.value);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    // onAuthStateChange is the key. It fires when:
-    // 1. The page loads and the user is already logged in.
-    // 2. The user logs in (e.g., after redirecting from Discord).
-    // 3. The user logs out.
     supabase.auth.onAuthStateChange((event, session) => {
         if (session) {
-            // A user is logged in.
-            // The `SIGNED_IN` event is useful for one-time actions after login.
             if (event === 'SIGNED_IN') {
-                // Clean the ugly tokens from the URL for a cleaner look.
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-            // Render the dashboard for the logged-in user.
             renderDashboard(session.user);
         } else {
-            // The user is not logged in. Redirect to the login page.
             window.location.replace('/index.html');
         }
     });

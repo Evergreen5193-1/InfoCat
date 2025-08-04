@@ -1,6 +1,6 @@
 // dashboard.js
-const SUPABASE_URL = 'https://pozkpfnyscbnmafkgqyz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvemtwZm55c2Nibm1hZmtncXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzUyNzgsImV4cCI6MjA2ODU1MTI3OH0.EsEIdX25oH-gTb14XLTm3eYfsb8xEueLDn6ACPPMkeg';
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_PUBLIC_KEY';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -8,25 +8,35 @@ const loadingState = document.getElementById('loading-state');
 const dashboardContent = document.getElementById('dashboard-content');
 const logoutButton = document.getElementById('logout-button');
 
-// This function runs as soon as the page loads
-document.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-    if (sessionError) {
-        console.error('Error getting session:', sessionError);
-        loadingState.textContent = 'Could not get session.';
-        return;
-    }
-
-    if (!session) {
-        // If no session, redirect to login page
+// Use onAuthStateChange to handle login events
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+        // If a user signs in, render the dashboard
+        renderDashboard(session.user);
+    } else if (event === 'SIGNED_OUT') {
+        // If a user signs out, redirect to the login page
         window.location.replace('/index.html');
-        return;
     }
-
-    // If we have a session, render the page
-    renderDashboard(session.user);
 });
+
+// Also check for a session when the page loads initially
+document.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+        renderDashboard(session.user);
+    } else {
+        // If no session on page load, maybe the user needs to log in
+        // We can wait for the onAuthStateChange or redirect
+        // For now, we let the onAuthStateChange handle it, but if it fails,
+        // the user might be stuck on the loading screen. A timeout could redirect.
+        setTimeout(() => {
+            if (loadingState.style.display !== 'none') {
+                window.location.replace('/index.html');
+            }
+        }, 3000); // Redirect after 3 seconds if still loading
+    }
+});
+
 
 async function renderDashboard(user) {
     // Display user info
@@ -36,6 +46,7 @@ async function renderDashboard(user) {
     userAvatar.src = user.user_metadata.avatar_url;
 
     // Fetch the user's game accounts from the 'accounts' table
+    // RLS ensures we only get the accounts for the logged-in user.
     const { data: accounts, error } = await supabase
         .from('accounts')
         .select('*');
@@ -75,8 +86,6 @@ logoutButton.addEventListener('click', async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
         console.error('Error logging out:', error);
-    } else {
-        // Redirect to login page after logout
-        window.location.replace('/index.html');
     }
+    // The onAuthStateChange listener will handle the redirect.
 });

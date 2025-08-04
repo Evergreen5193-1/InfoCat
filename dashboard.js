@@ -8,42 +8,50 @@ const loadingState = document.getElementById('loading-state');
 const dashboardContent = document.getElementById('dashboard-content');
 const logoutButton = document.getElementById('logout-button');
 
-// Use onAuthStateChange to handle login events
-supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session) {
-        // If a user signs in, render the dashboard
-        renderDashboard(session.user);
-    } else if (event === 'SIGNED_OUT') {
-        // If a user signs out, redirect to the login page
-        window.location.replace('/index.html');
-    }
-});
-
-// Also check for a session when the page loads initially
-document.addEventListener('DOMContentLoaded', async () => {
+/**
+ * Main function to handle authentication and rendering.
+ */
+const handleAuthentication = async () => {
+    // First, check if there's an active session when the page loads
     const { data: { session } } = await supabase.auth.getSession();
+
     if (session) {
-        renderDashboard(session.user);
-    } else {
-        // If no session on page load, maybe the user needs to log in
-        // We can wait for the onAuthStateChange or redirect
-        // For now, we let the onAuthStateChange handle it, but if it fails,
-        // the user might be stuck on the loading screen. A timeout could redirect.
-        setTimeout(() => {
-            if (loadingState.style.display !== 'none') {
-                window.location.replace('/index.html');
-            }
-        }, 3000); // Redirect after 3 seconds if still loading
+        // If a session exists, the user is already logged in.
+        await renderDashboard(session.user);
     }
-});
+
+    // Now, set up a listener for any future auth changes.
+    // This is crucial for catching the user after they are redirected back from Discord.
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            // This event fires after a successful login.
+            await renderDashboard(session.user);
+        } else if (event === 'SIGNED_OUT') {
+            // This event fires after a successful logout.
+            window.location.replace('/index.html');
+        }
+    });
+
+    // Final check: If after a moment there's still no session, redirect to login.
+    // This handles the case where a non-logged-in user lands on the dashboard directly.
+    setTimeout(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session && !dashboardContent.classList.contains('hidden')) {
+            // The dashboard is not visible, and there's no session, so redirect.
+             window.location.replace('/index.html');
+        }
+    }, 2500); // Check after 2.5 seconds
+};
 
 
+/**
+ * Fetches data and renders the main dashboard content.
+ * @param {object} user - The authenticated user object from Supabase.
+ */
 async function renderDashboard(user) {
     // Display user info
-    const welcomeMessage = document.getElementById('welcome-message');
-    const userAvatar = document.getElementById('user-avatar');
-    welcomeMessage.textContent = `Welcome, ${user.user_metadata.full_name}!`;
-    userAvatar.src = user.user_metadata.avatar_url;
+    document.getElementById('welcome-message').textContent = `Welcome, ${user.user_metadata.full_name}!`;
+    document.getElementById('user-avatar').src = user.user_metadata.avatar_url;
 
     // Fetch the user's game accounts from the 'accounts' table
     // RLS ensures we only get the accounts for the logged-in user.
@@ -53,26 +61,26 @@ async function renderDashboard(user) {
 
     if (error) {
         console.error('Error fetching accounts:', error);
-        return;
-    }
-
-    // Render the account cards
-    const accountsContainer = document.getElementById('accounts-container');
-    accountsContainer.innerHTML = ''; // Clear loading/old content
-
-    if (accounts && accounts.length > 0) {
-        accounts.forEach(account => {
-            const card = document.createElement('div');
-            card.className = 'bg-gray-800 p-6 rounded-lg';
-            card.innerHTML = `
-                <h3 class="text-xl font-bold">${account.alias || `Account ${account.governor_id}`}</h3>
-                <p class="text-purple-400 capitalize">${account.account_type} Account</p>
-                <p class="text-gray-400">Governor ID: ${account.governor_id}</p>
-            `;
-            accountsContainer.appendChild(card);
-        });
+        document.getElementById('accounts-container').innerHTML = '<p class="text-red-400">Could not load account data.</p>';
     } else {
-        accountsContainer.innerHTML = '<p>You have no accounts linked yet. Use the Discord bot to bind one!</p>';
+        // Render the account cards
+        const accountsContainer = document.getElementById('accounts-container');
+        accountsContainer.innerHTML = ''; // Clear loading/old content
+
+        if (accounts && accounts.length > 0) {
+            accounts.forEach(account => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-800 p-6 rounded-lg';
+                card.innerHTML = `
+                    <h3 class="text-xl font-bold">${account.alias || `Account ${account.governor_id}`}</h3>
+                    <p class="text-purple-400 capitalize">${account.account_type} Account</p>
+                    <p class="text-gray-400">Governor ID: ${account.governor_id}</p>
+                `;
+                accountsContainer.appendChild(card);
+            });
+        } else {
+            accountsContainer.innerHTML = '<p>You have no accounts linked yet. Use the Discord bot to bind one!</p>';
+        }
     }
 
     // Show the dashboard and hide loading
@@ -83,9 +91,9 @@ async function renderDashboard(user) {
 // Handle logout
 logoutButton.addEventListener('click', async () => {
     logoutButton.textContent = 'Logging out...';
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-        console.error('Error logging out:', error);
-    }
+    await supabase.auth.signOut();
     // The onAuthStateChange listener will handle the redirect.
 });
+
+// Start the authentication process when the page loads.
+document.addEventListener('DOMContentLoaded', handleAuthentication);

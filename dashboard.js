@@ -79,28 +79,41 @@ function renderSummaryCards(speedupData) {
     container.innerHTML = ''; // Clear old cards
 
     if (speedupData.length === 0) {
-        container.innerHTML = '<p class="col-span-full">No speedup data found for this account.</p>';
+        container.innerHTML = '<p class="col-span-full text-center">No speedup data found for this account.</p>';
         return;
     }
 
     const latest = speedupData[speedupData.length - 1];
     const previous = speedupData.length > 1 ? speedupData[speedupData.length - 2] : null;
 
+    // Calculate combined values
+    const latestTrainingCombined = latest.universal_days + latest.training_days;
+    const latestHealingCombined = latest.universal_days + latest.healing_days;
+    
+    let prevTrainingCombined = 0;
+    let prevHealingCombined = 0;
+    if (previous) {
+        prevTrainingCombined = previous.universal_days + previous.training_days;
+        prevHealingCombined = previous.universal_days + previous.healing_days;
+    }
+
     const cards = [
         { title: 'Universal', value: latest.universal_days, gain: previous ? latest.universal_days - previous.universal_days : 0 },
         { title: 'Training', value: latest.training_days, gain: previous ? latest.training_days - previous.training_days : 0 },
         { title: 'Healing', value: latest.healing_days, gain: previous ? latest.healing_days - previous.healing_days : 0 },
+        { title: 'Training + Universal', value: latestTrainingCombined, gain: previous ? latestTrainingCombined - prevTrainingCombined : 0 },
+        { title: 'Healing + Universal', value: latestHealingCombined, gain: previous ? latestHealingCombined - prevHealingCombined : 0 },
     ];
 
     cards.forEach(card => {
         const gainSign = card.gain >= 0 ? '+' : '';
         const gainColor = card.gain >= 0 ? 'text-green-400' : 'text-red-400';
         const cardEl = document.createElement('div');
-        cardEl.className = 'bg-gray-800 p-6 rounded-lg';
+        cardEl.className = 'bg-gray-800 p-6 rounded-lg text-center md:text-left';
         cardEl.innerHTML = `
             <h4 class="text-gray-400 text-lg">${card.title}</h4>
             <p class="text-3xl font-bold text-white">${card.value.toLocaleString()}d</p>
-            <p class="text-md ${gainColor}">${gainSign}${card.gain.toLocaleString()}d since last scan</p>
+            ${previous ? `<p class="text-md ${gainColor}">${gainSign}${card.gain.toLocaleString()}d since last scan</p>` : '<p class="text-sm text-gray-500">First scan recorded</p>'}
         `;
         container.appendChild(cardEl);
     });
@@ -115,6 +128,16 @@ function renderChart(data) {
     
     if (speedupChart) {
         speedupChart.destroy(); // Destroy the old chart instance before creating a new one
+    }
+
+    if (data.length < 2) {
+        // You can't draw a line graph with one point. Show a message instead.
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillStyle = '#6B7280';
+        ctx.font = '16px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('Submit another scan tomorrow to see your progress graph!', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        return;
     }
 
     speedupChart = new Chart(ctx, {

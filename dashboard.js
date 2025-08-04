@@ -12,7 +12,7 @@ const accountSelector = document.getElementById('account-selector');
 let speedupChart = null; // To hold the chart instance
 
 /**
- * Fetches data and renders the main dashboard content.
+ * Fetches data and renders the main dashboard content!
  * @param {object} user - The authenticated user object from Supabase.
  */
 async function renderDashboard(user) {
